@@ -18,5 +18,5 @@ register:
     controller: App\Controller\RegistrationController::register
 
 product_show:
-    path: /product/{id}
+    path: /product/{name}
     controller: App\Controller\ProductsController::show

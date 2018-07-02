@@ -32,7 +32,7 @@ class ProductsController extends Controller
     }
 
     /**
-     * @ParamConverter("post", class="App\Entity\Product")
+     * @ParamConverter("product", options={"mapping": {"name" = "slug"}})
      */
     public function show(Product $product)
     {
