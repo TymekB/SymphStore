@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Online store{% endblock %}</title>
+        <title>{% block title %}SymphStore{% endblock %}</title>
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('css/app.min.css') }}">
             <link rel="stylesheet" href="{{ asset('fonts/fontello/css/fontello.css') }}">
@@ -21,8 +21,11 @@
 
             <hr>
 
+            {% include 'init/messages.html.twig' %}
+
             {% block body %}
             {% endblock %}
+
         </div>
 
 
