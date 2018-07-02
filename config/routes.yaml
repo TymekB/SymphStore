@@ -5,3 +5,10 @@
 index:
     path: /
     controller: App\Controller\ProductsController::index
+
+login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+
+logout:
+    path: /logout
