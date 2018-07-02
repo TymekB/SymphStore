@@ -1,5 +1,21 @@
 {% extends 'base.html.twig' %}
 
+
 {% block body %}
-    <p>Products...</p>
+    <div class="row">
+        {% for product in products %}
+            <div class="col-sm-6 col-sm-4 col-md-3">
+                <div class="panel panel-default product-card">
+
+                    <img src="http://placehold.it/260x320" alt="" class="image">
+
+                    <div class="panel-body text-center">
+
+                        <h4 class="product-name">{{ product.name }}</h4>
+                        <div class="product-price">{{ product.price }}</div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

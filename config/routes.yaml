@@ -16,3 +16,7 @@ logout:
 register:
     path: /register
     controller: App\Controller\RegistrationController::register
+
+product_show:
+    path: /product/{id}
+    controller: App\Controller\ProductsController::show

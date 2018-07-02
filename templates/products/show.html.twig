@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+
+                <div class="panel-body">
+
+                    <img src="http://placehold.it/320x328" alt="" class="image">
+
+                    <div class="product-description">
+                        <div class="pull-left">Name</div>
+                        <div class="pull-right">{{ product.name }}</div>
+                        <div class="clearfix"></div>
+
+                        <div class="pull-left">Quantity</div>
+                        <div class="pull-right">High</div>
+                        <div class="clearfix"></div>
+
+                        <div class="pull-left">Price</div>
+                        <div class="pull-right">
+                            <b>{{ product.price }}</b> <span class="product-sale">$25.99</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <hr>
+
+                    <button class="btn btn-block btn-success icon-basket">Add to shopping card</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 product-description">
+            <h1>{{ product.name }}</h1>
+            <hr>
+            <p>{{ product.description }}</p>
+
+            <hr>
+            <h3>Comments section</h3>
+
+            <div class="media">
+                <div class="media-left">
+                    <img src="http://placehold.it/64x64" class="media-object" style="width:60px">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">John Doe</h4>
+                    <p>Lorem ipsum...</p>
+                </div>
+            </div>
+
+            <div class="media">
+                <div class="media-left">
+                    <img src="http://placehold.it/64x64" class="media-object" style="width:60px">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">John Doe</h4>
+                    <p>Lorem ipsum...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
