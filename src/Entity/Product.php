@@ -32,9 +32,16 @@ class Product
     private $price;
 
     /**
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $slug;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $img;
+
 
     public function getId()
     {
@@ -85,6 +92,18 @@ class Product
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getImg(): ?string
+    {
+        return $this->img;
+    }
+
+    public function setImg(string $img): self
+    {
+        $this->img = $img;
 
         return $this;
     }

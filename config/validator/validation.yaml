@@ -26,3 +26,12 @@ App\Entity\User:
                 max: 20
                 minMessage: 'Password must be at least {{ limit }} characters long!'
                 maxMessage: 'Password cannot be longer than {{ limit }} characters!'
+
+App\Entity\Product:
+    properties:
+        img:
+            - Image:
+                minWidth: 200
+                maxWidth: 400
+                minHeight: 200
+                maxHeight: 400
