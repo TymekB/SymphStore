@@ -1,0 +1,16 @@
+easy_admin:
+    site_name: '<span style="font-weight:300">Symph</span>Admin'
+    entities:
+        Product:
+            class: App\Entity\Product
+            form:
+                fields:
+                  - 'name'
+                  - 'description'
+                  - 'price'
+                  - { property: 'img', type: 'file', type_options: { data_class: null }}
+        Discount:
+            class: App\Entity\Discount
+
+    design:
+        brand_color: '#34495e'
