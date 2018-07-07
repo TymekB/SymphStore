@@ -10,7 +10,18 @@
                         <img src="http://placehold.it/230x328" alt="" class="image">
 
                         <h4 class="product-name">{{ product.name }}</h4>
-                        <div class="product-price">{{ product.price }}</div>
+
+                        {% if product.getdiscountedPrice() %}
+                            <div class="product-price">
+                                ${{ product.discountedPrice }} <span class="product-sale">{{ product.price }}</span>
+                            </div>
+                        {% else %}
+                            <div class="product-price">
+                                ${{ product.price }}
+                            </div>
+                        {% endif %}
+
+
                     </div>
                 </div>
             </div>

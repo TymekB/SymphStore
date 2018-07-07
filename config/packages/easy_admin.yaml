@@ -8,6 +8,7 @@ easy_admin:
                   - 'name'
                   - 'description'
                   - 'price'
+                  - 'discounts'
                   - { property: 'img', type: 'file', type_options: { data_class: null }}
         Discount:
             class: App\Entity\Discount

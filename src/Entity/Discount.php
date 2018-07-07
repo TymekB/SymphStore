@@ -26,6 +26,11 @@ class Discount
      */
     private $product;
 
+    public function __toString()
+    {
+        return $this->percent."%";
+    }
+
     public function getId()
     {
         return $this->id;

@@ -54,6 +54,11 @@ class Product
         $this->discounts = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+
 
     public function getId()
     {
@@ -94,6 +99,23 @@ class Product
         $this->price = $price;
 
         return $this;
+    }
+
+    public function getDiscountedPrice()
+    {
+        $discount = 0;
+
+        foreach($this->discounts as $value) {
+            $discount += $value->getPercent();
+        }
+
+        if($discount == 0) {
+            return false;
+        }
+
+        $discountedPrice = $this->price * ((100 - $discount) / 100);
+
+        return round($discountedPrice, 2, PHP_ROUND_HALF_UP);
     }
 
     public function getSlug(): ?string
