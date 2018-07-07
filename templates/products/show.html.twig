@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    {% include 'init/messages.html.twig' %}
+
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-default">
-
                 <div class="panel-body">
 
                     <img src="http://placehold.it/320x328" alt="" class="image">
@@ -31,7 +33,7 @@
 
                     <hr>
 
-                    <button class="btn btn-block btn-success icon-basket">Add to shopping card</button>
+                    <a href="{{ path('cart_add', {'id': product.id }) }}" class="btn btn-block btn-success icon-basket">Add to shopping card</a>
                 </div>
             </div>
         </div>

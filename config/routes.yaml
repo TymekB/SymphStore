@@ -20,3 +20,7 @@ register:
 product_show:
     path: /product/{name}
     controller: App\Controller\ProductsController::show
+
+cart_add:
+    path: /cart/add/{id}
+    controller: App\Controller\ProductsController::addToShoppingCart
