@@ -20,7 +20,11 @@
 
                         <div class="pull-left">Price</div>
                         <div class="pull-right">
-                            <b>{{ product.price }}</b> <span class="product-sale">$25.99</span>
+                            {% if product.discountedPrice %}
+                                <b>${{ product.discountedPrice }}</b> <span class="product-sale">{{ product.price }}</span>
+                            {% else%}
+                                <b>${{ product.price }}</b>
+                            {% endif %}
                         </div>
                         <div class="clearfix"></div>
                     </div>
