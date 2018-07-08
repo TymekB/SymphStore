@@ -59,7 +59,6 @@ class ProductsController extends Controller
      * @param Product $product
      * @return Response
      */
-
     public function addToShoppingCart(Product $product)
     {
         $productAdded = $this->shoppingCart->addProduct($product);
@@ -71,6 +70,23 @@ class ProductsController extends Controller
         }
 
         return $this->redirectToRoute('product_show', ['name' => $product->getSlug()]);
+    }
+
+
+    /**
+     * @ParamConverter("product", class="App\Entity\Product")
+     * @param Product $product
+     * @return Response
+     */
+    public function deleteFromShoppingCart(Product $product)
+    {
+        $productDeleted = $this->shoppingCart->deleteProduct($product);
+
+        if($productDeleted) {
+            $this->addFlash('success', 'Product deleted');
+        }
+
+        return $this->redirectToRoute('cart_show');
     }
 
     public function showShoppingCart()

@@ -10,6 +10,7 @@ namespace App;
 
 
 use App\Entity\Product;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ShoppingCart
@@ -43,6 +44,25 @@ class ShoppingCart
             $this->session->set('basket', $basket);
 
             return true;
+        }
+
+        return false;
+    }
+
+    public function deleteProduct(Product $product)
+    {
+        $basket = $this->session->get('basket');
+
+        if(!$basket) {
+            return false;
+        }
+
+        foreach($basket as $key => $value) {
+            if($product->getId() == $value->getId()) {
+                unset($basket[$key]);
+                $this->session->set('basket', $basket);
+                return true;
+            }
         }
 
         return false;
