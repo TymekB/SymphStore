@@ -72,4 +72,11 @@ class ProductsController extends Controller
 
         return $this->redirectToRoute('product_show', ['name' => $product->getSlug()]);
     }
+
+    public function showShoppingCart()
+    {
+        $products = $this->shoppingCart->getProductList();
+
+        return $this->render('products/shoppingCart.html.twig', ['products' => $products]);
+    }
 }

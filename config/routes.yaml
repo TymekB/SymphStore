@@ -24,3 +24,7 @@ product_show:
 cart_add:
     path: /cart/add/{id}
     controller: App\Controller\ProductsController::addToShoppingCart
+
+cart_show:
+    path: /cart
+    controller: App\Controller\ProductsController::showShoppingCart

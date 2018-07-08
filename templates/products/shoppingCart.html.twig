@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>${{ product.price }}</td>
+                <td><a href="#">Delete</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <button class="btn btn-info">Process payment</button>
+{% endblock %}
