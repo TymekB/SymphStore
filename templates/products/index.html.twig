@@ -11,9 +11,9 @@
 
                         <h4 class="product-name">{{ product.name }}</h4>
 
-                        {% if product.getdiscountedPrice() %}
+                        {% if product.discount %}
                             <div class="product-price">
-                                ${{ product.discountedPrice }} <span class="product-sale">{{ product.price }}</span>
+                                ${{ product.price}} <span class="product-sale">{{ product.notDiscountedPrice }}</span>
                             </div>
                         {% else %}
                             <div class="product-price">

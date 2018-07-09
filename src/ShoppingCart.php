@@ -10,7 +10,6 @@ namespace App;
 
 
 use App\Entity\Product;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ShoppingCart
@@ -36,7 +35,7 @@ class ShoppingCart
         $basket = $this->session->get('basket');
 
         if(!$basket) {
-            $this->session->set('basket', [$product]);
+            $this->session->set('basket', []);
         }
 
         if(!$this->checkIfProductExist($product)) {
@@ -79,9 +78,31 @@ class ShoppingCart
         return $basket;
     }
 
+    public function getTotalPrice()
+    {
+        $basket = $this->session->get('basket');
+        $total = 0;
+
+        if(!$basket) {
+            return $total;
+        }
+
+        foreach($basket as $value) {
+
+            $price = $value->getPrice();
+            $total += $price;
+        }
+
+        return $total;
+    }
+
     public function checkIfProductExist(Product $product)
     {
         $basket = $this->session->get('basket');
+
+        if(!$basket) {
+            return false;
+        }
 
         /** @var Product $value */
         foreach($basket as $value) {

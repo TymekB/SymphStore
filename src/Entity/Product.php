@@ -91,7 +91,15 @@ class Product
 
     public function getPrice(): ?float
     {
-        return $this->price;
+        $discount = $this->getDiscount();
+
+        if(!$discount) {
+            return $this->price;
+        }
+
+        $discountedPrice = $this->price * ((100 - $discount) / 100);
+
+        return round($discountedPrice, 2, PHP_ROUND_HALF_UP);
     }
 
     public function setPrice(float $price): self
@@ -101,7 +109,12 @@ class Product
         return $this;
     }
 
-    public function getDiscountedPrice()
+    public function getNotDiscountedPrice()
+    {
+        return $this->price;
+    }
+
+    public function getDiscount()
     {
         $discount = 0;
 
@@ -113,9 +126,7 @@ class Product
             return false;
         }
 
-        $discountedPrice = $this->price * ((100 - $discount) / 100);
-
-        return round($discountedPrice, 2, PHP_ROUND_HALF_UP);
+        return $discount;
     }
 
     public function getSlug(): ?string

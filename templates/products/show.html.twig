@@ -22,8 +22,8 @@
 
                         <div class="pull-left">Price</div>
                         <div class="pull-right">
-                            {% if product.discountedPrice %}
-                                <b>${{ product.discountedPrice }}</b> <span class="product-sale">{{ product.price }}</span>
+                            {% if product.discount %}
+                                <b>${{ product.price }}</b> <span class="product-sale">{{ product.notDiscountedPrice}}</span>
                             {% else%}
                                 <b>${{ product.price }}</b>
                             {% endif %}

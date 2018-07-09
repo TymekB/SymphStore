@@ -92,7 +92,8 @@ class ProductsController extends Controller
     public function showShoppingCart()
     {
         $products = $this->shoppingCart->getProductList();
+        $total = $this->shoppingCart->getTotalPrice();
 
-        return $this->render('products/shoppingCart.html.twig', ['products' => $products]);
+        return $this->render('products/shoppingCart.html.twig', ['products' => $products, 'total' => $total]);
     }
 }
