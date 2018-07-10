@@ -38,9 +38,14 @@ class ShoppingCart
         $this->session->start();
     }
 
+    private function getBasket()
+    {
+        return $this->session->get('basket');
+    }
+
     public function addProduct(Product $product)
     {
-        $basket = $this->session->get('basket');
+        $basket = $this->getBasket();
 
         if(!$basket) {
             $basket = [];
@@ -58,7 +63,7 @@ class ShoppingCart
 
     public function deleteProduct(Product $product)
     {
-        $basket = $this->session->get('basket');
+        $basket = $this->getBasket();
 
         if(!$basket) {
             return false;
@@ -78,7 +83,7 @@ class ShoppingCart
 
     public function getProductList()
     {
-        $basket = $this->session->get('basket');
+        $basket = $this->getBasket();
 
         if(!$basket) {
             return [];
@@ -89,7 +94,7 @@ class ShoppingCart
 
     public function getTotalPrice()
     {
-        $basket = $this->session->get('basket');
+        $basket = $this->getBasket();
         $total = 0;
 
         if(!$basket) {
@@ -105,7 +110,7 @@ class ShoppingCart
 
     public function checkIfProductExists(Product $product)
     {
-        $basket = $this->session->get('basket');
+        $basket = $this->getBasket();
 
         if(!$basket) {
             return false;
