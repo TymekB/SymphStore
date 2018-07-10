@@ -27,6 +27,10 @@ services:
     slugger:
         class: EasySlugger\Slugger
 
+    App\Serializer\ProductSerializer:
+        arguments:
+            $serializer: '@serializer'
+
     App\EventSubscriber\EasyAdminSubscriber:
         arguments:
             $slugger: '@slugger'
