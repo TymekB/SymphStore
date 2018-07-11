@@ -43,6 +43,13 @@ class ShoppingCart
         return $this->session->get('basket');
     }
 
+    public function setBasket(array $basket)
+    {
+        $this->session->set('basket', $basket);
+
+        return true;
+    }
+
     public function addProduct(Product $product)
     {
         $basket = $this->getBasket();
@@ -56,7 +63,7 @@ class ShoppingCart
         }
 
         $basket[] = $this->productSerializer->normalize($product);
-        $this->session->set('basket', $basket);
+        $this->setBasket($basket);
 
         return true;
     }
@@ -72,7 +79,7 @@ class ShoppingCart
         foreach($basket as $key => $value) {
             if($product->getId() == $value['id']) {
                 unset($basket[$key]);
-                $this->session->set('basket', $basket);
+                $this->setBasket($basket);
 
                 return true;
             }
