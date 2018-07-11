@@ -23,12 +23,12 @@ product_show:
 
 cart_add:
     path: /cart/add/{id}
-    controller: App\Controller\ProductsController::addToShoppingCart
+    controller: App\Controller\ShoppingCartController:addProduct
 
 cart_show:
     path: /cart
-    controller: App\Controller\ProductsController::showShoppingCart
+    controller: App\Controller\ShoppingCartController:show
 
 cart_delete:
     path: /cart/delete/{id}
-    controller: App\Controller\ProductsController::deleteFromShoppingCart
+    controller: App\Controller\ShoppingCartController::deleteProduct
