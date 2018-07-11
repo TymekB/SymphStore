@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% include 'init/messages.html.twig' %}
+
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+            <h3>Your shopping cart</h3>
+        </div>
+
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>${{ product.price }}</td>
+
+                        <td><a href="{{ path('cart_delete', {'id': product.id}) }}">Delete</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <p><b>Total: </b>${{ total }}</p>
+
+    <hr>
+    <a href="{{ path('payment') }}" class="btn btn-info">Process payment</a>
+{% endblock %}

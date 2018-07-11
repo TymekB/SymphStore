@@ -25,7 +25,7 @@ class ShoppingCartController extends Controller
         $products = $this->shoppingCart->getProductList();
         $total = $this->shoppingCart->getTotalPrice();
 
-        return $this->render('products/shoppingCart.html.twig', ['products' => $products, 'total' => $total]);
+        return $this->render('shopping_cart/show.html.twig', ['products' => $products, 'total' => $total]);
     }
 
 

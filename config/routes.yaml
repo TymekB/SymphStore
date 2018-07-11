@@ -32,3 +32,7 @@ cart_show:
 cart_delete:
     path: /cart/delete/{id}
     controller: App\Controller\ShoppingCartController::deleteProduct
+
+payment:
+    path: /payment
+    controller: App\Controller\PaymentController::processPayment
