@@ -5,6 +5,18 @@
         <div class="col-sm-4 col-sm-offset-4">
             {{ form_start(form) }}
             {{ form_row(form.username) }}
+
+            <div class="row">
+                <div class="col-sm-6">
+                    {{ form_row(form.firstName) }}
+                </div>
+
+                <div class="col-sm-6">
+                    {{ form_row(form.lastName) }}
+                </div>
+            </div>
+
+
             {{ form_row(form.email) }}
             {{ form_row(form.password.first) }}
             {{ form_row(form.password.second) }}
