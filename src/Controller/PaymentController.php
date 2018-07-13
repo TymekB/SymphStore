@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\ShoppingCart;
+use App\ShoppingProcess\Cart;
 use Stripe\Charge;
 use Stripe\Customer;
 use Stripe\Stripe;
@@ -11,14 +11,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class PaymentController extends Controller
 {
-    /**
-     * @var ShoppingCart
-     */
     private $shoppingCart;
 
-    public function __construct(ShoppingCart $shoppingCart)
+    public function __construct(Cart $cart)
     {
-        $this->shoppingCart = $shoppingCart;
+        $this->shoppingCart = $cart;
     }
 
     public function processPayment(Request $request)
@@ -45,12 +42,8 @@ class PaymentController extends Controller
                     'customer' => $customer->id
                 ]
             );
-
-            var_dump($charge);
         }
-
 
         return $this->render('payment/process_payment.html.twig', ['total' => $total]);
     }
-
 }

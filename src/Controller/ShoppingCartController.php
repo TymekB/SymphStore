@@ -3,27 +3,24 @@
 namespace App\Controller;
 
 use App\Entity\Product;
-use App\ShoppingCart;
+use App\ShoppingProcess\Cart;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
 class ShoppingCartController extends Controller
 {
-    /**
-     * @var ShoppingCart
-     */
-    private $shoppingCart;
+    private $cart;
 
-    public function __construct(ShoppingCart $shoppingCart)
+    public function __construct(Cart $cart)
     {
-        $this->shoppingCart = $shoppingCart;
+        $this->cart = $cart;
     }
 
     public function show()
     {
-        $products = $this->shoppingCart->getProductList();
-        $total = $this->shoppingCart->getTotalPrice();
+        $products = $this->cart->getProductList();
+        $total = $this->cart->getTotalPrice();
 
         return $this->render('shopping_cart/show.html.twig', ['products' => $products, 'total' => $total]);
     }
@@ -36,7 +33,7 @@ class ShoppingCartController extends Controller
      */
     public function addProduct(Product $product)
     {
-        $productAdded = $this->shoppingCart->addProduct($product);
+        $productAdded = $this->cart->addProduct($product);
 
         if($productAdded) {
             $this->addFlash('success', 'Product has been added to your cart');
@@ -51,10 +48,11 @@ class ShoppingCartController extends Controller
      * @ParamConverter("product", class="App\Entity\Product")
      * @param Product $product
      * @return Response
+     * @throws \App\ShoppingProcess\Exception\ProductNotFoundException
      */
     public function deleteProduct(Product $product)
     {
-        $productDeleted = $this->shoppingCart->deleteProduct($product);
+        $productDeleted = $this->cart->deleteProduct($product);
 
         if($productDeleted) {
             $this->addFlash('success', 'Product deleted');
