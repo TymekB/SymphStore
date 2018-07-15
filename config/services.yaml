@@ -31,6 +31,10 @@ services:
         arguments:
             $slugger: '@slugger'
 
+    App\ShoppingProcess\Payment:
+        arguments:
+            $apiKey: '%env(STRIPE_SECRET)%'
+
     App\ShoppingProcess\Cart:
         arguments:
             $session: '@session'

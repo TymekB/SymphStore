@@ -6,7 +6,7 @@
  * Time: 18:11
  */
 
-namespace App\ShoppingProcess\Exception;
+namespace App\ShoppingProcess\CartException;
 
 
 class ProductNotFoundException extends \Exception

@@ -48,7 +48,7 @@ class ShoppingCartController extends Controller
      * @ParamConverter("product", class="App\Entity\Product")
      * @param Product $product
      * @return Response
-     * @throws \App\ShoppingProcess\Exception\ProductNotFoundException
+     * @throws \App\ShoppingProcess\CartException\ProductNotFoundException
      */
     public function deleteProduct(Product $product)
     {

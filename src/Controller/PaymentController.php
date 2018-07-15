@@ -3,45 +3,33 @@
 namespace App\Controller;
 
 use App\ShoppingProcess\Cart;
-use Stripe\Charge;
-use Stripe\Customer;
-use Stripe\Stripe;
+use App\ShoppingProcess\Payment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class PaymentController extends Controller
 {
-    private $shoppingCart;
+    private $cart;
+    /**
+     * @var Payment
+     */
+    private $payment;
 
-    public function __construct(Cart $cart)
+    public function __construct(Cart $cart, Payment $payment)
     {
-        $this->shoppingCart = $cart;
+        $this->cart = $cart;
+        $this->payment = $payment;
     }
 
     public function processPayment(Request $request)
     {
-        $total = $this->shoppingCart->getTotalPrice();
+        $total = $this->cart->getTotalPrice();
         $token = $request->request->get('stripeToken');
 
         if($token) {
+            $this->payment->setToken($token);
 
-            Stripe::setApiKey(getenv('STRIPE_SECRET'));
-
-            $customer = Customer::create(
-                [
-                    'email' => $this->getUser()->getEmail(),
-                    'source' => $token
-                ]
-            );
-
-            $charge = Charge::create(
-                [
-                    'amount' => $total * 100,
-                    'currency' => 'usd',
-                    'description' => 'test',
-                    'customer' => $customer->id
-                ]
-            );
+            $orderDetails = $this->payment->process($this->getUser(), $this->cart);
         }
 
         return $this->render('payment/process_payment.html.twig', ['total' => $total]);

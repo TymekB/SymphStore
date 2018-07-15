@@ -11,7 +11,7 @@ namespace App\ShoppingProcess;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
-use App\ShoppingProcess\Exception\ProductNotFoundException;
+use App\ShoppingProcess\CartException\ProductNotFoundException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Cart
