@@ -54,7 +54,11 @@ class Payment
                 ]
             );
 
-            $orderDetails[] = $charge;
+            $orderDetails[] = [
+                'charge' => $charge,
+                'product' => $product,
+                'user' => $user
+            ];
         }
 
         return $orderDetails;

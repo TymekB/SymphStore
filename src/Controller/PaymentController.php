@@ -6,6 +6,7 @@ use App\ShoppingProcess\Cart;
 use App\ShoppingProcess\Payment;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends Controller
 {
@@ -30,6 +31,8 @@ class PaymentController extends Controller
             $this->payment->setToken($token);
 
             $orderDetails = $this->payment->process($this->getUser(), $this->cart);
+
+            return new Response('Your payment has been processed');
         }
 
         return $this->render('payment/process_payment.html.twig', ['total' => $total]);

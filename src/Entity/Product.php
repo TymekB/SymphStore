@@ -49,9 +49,15 @@ class Product
      */
     private $discounts;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="product")
+     */
+    private $orders;
+
     public function __construct()
     {
         $this->discounts = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function __toString()
@@ -177,6 +183,37 @@ class Product
             // set the owning side to null (unless already changed)
             if ($discount->getProduct() === $this) {
                 $discount->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->contains($order)) {
+            $this->orders->removeElement($order);
+            // set the owning side to null (unless already changed)
+            if ($order->getProduct() === $this) {
+                $order->setProduct(null);
             }
         }
 
