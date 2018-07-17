@@ -31,6 +31,10 @@ services:
         arguments:
             $slugger: '@slugger'
 
+    App\ShoppingProcess\OrderCreator:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
     App\ShoppingProcess\Payment:
         arguments:
             $apiKey: '%env(STRIPE_SECRET)%'

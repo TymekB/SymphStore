@@ -29,7 +29,7 @@ class Order
     private $user;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
      */
     private $status = 1;
 

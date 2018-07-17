@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\ShoppingProcess\Cart;
+use App\ShoppingProcess\OrderCreator;
 use App\ShoppingProcess\Payment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,12 +22,17 @@ class PaymentController extends Controller
      * @var EntityManagerInterface
      */
     private $em;
+    /**
+     * @var OrderCreator
+     */
+    private $orderCreator;
 
-    public function __construct(Cart $cart, Payment $payment, EntityManagerInterface $em)
+    public function __construct(Cart $cart, Payment $payment, OrderCreator $orderCreator, EntityManagerInterface $em)
     {
         $this->cart = $cart;
         $this->payment = $payment;
         $this->em = $em;
+        $this->orderCreator = $orderCreator;
     }
 
     public function processPayment(Request $request)
@@ -34,22 +40,11 @@ class PaymentController extends Controller
         $total = $this->cart->getTotalPrice();
         $token = $request->request->get('stripeToken');
 
-        if($token) {
+        if($token && $total > 0) {
             $this->payment->setToken($token);
-
             $orderDetails = $this->payment->process($this->getUser(), $this->cart);
 
-            foreach($orderDetails as $value) {
-                $order = new Order();
-
-                $order->setId($value['charge']->id);
-                $order->setUser($value['user']);
-                $order->setProduct($value['product']);
-
-                $this->em->persist($order);
-            }
-
-            $this->em->flush();
+            $this->orderCreator->create($orderDetails);
 
             return new Response('Your payment has been processed');
         }

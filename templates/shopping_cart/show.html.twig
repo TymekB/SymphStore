@@ -36,5 +36,7 @@
     <p><b>Total: </b>${{ total }}</p>
 
     <hr>
-    <a href="{{ path('payment') }}" class="btn btn-info">Process payment</a>
+    {% if total > 0 %}
+        <a href="{{ path('payment') }}" class="btn btn-info">Process payment</a>
+    {% endif %}
 {% endblock %}
