@@ -36,3 +36,7 @@ cart_delete:
 payment:
     path: /payment
     controller: App\Controller\PaymentController::processPayment
+
+order_history:
+    path: /history
+    controller: App\Controller\OrdersController::list

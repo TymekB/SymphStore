@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Your order history</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Product name</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.product.name }}</td>
+
+                {% if order.status == 1 %}
+                    <td><span class="label label-default">waiting for a provider</span></td>
+                {% elseif order.status == 2 %}
+                    <td><span class="label label-info">sent</span></td>
+                {% else %}
+                    <td><span class="label label-success">received</span></td>
+                {% endif %}
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+{% endblock %}

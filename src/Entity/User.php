@@ -60,6 +60,12 @@ class User implements UserInterface, \Serializable
         $this->orders = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getFullName();
+    }
+
+
     public function getId()
     {
         return $this->id;
@@ -186,6 +192,11 @@ class User implements UserInterface, \Serializable
         $this->lastName = $lastName;
 
         return $this;
+    }
+
+    public function getFullName()
+    {
+        return $this->firstName.' '.$this->lastName;
     }
 
     /**

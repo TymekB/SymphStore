@@ -13,5 +13,8 @@ easy_admin:
         Discount:
             class: App\Entity\Discount
 
+        Order:
+            class: App\Entity\Order
+
     design:
         brand_color: '#34495e'

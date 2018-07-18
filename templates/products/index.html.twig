@@ -13,14 +13,13 @@
 
                         {% if product.discount %}
                             <div class="product-price">
-                                ${{ product.price}} <span class="product-sale">{{ product.notDiscountedPrice }}</span>
+                                ${{ product.price}} <span class="product-sale">${{ product.notDiscountedPrice }}</span>
                             </div>
                         {% else %}
                             <div class="product-price">
                                 ${{ product.price }}
                             </div>
                         {% endif %}
-
                     </div>
                 </div>
             </div>
@@ -35,9 +34,7 @@
         $(document).ready(function() {
 
             $('.product-card').click(function() {
-
                 location.href = $(this).data('href');
-
             });
 
         });
