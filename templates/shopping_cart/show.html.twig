@@ -16,14 +16,18 @@
                     <tr>
                         <th>Name</th>
                         <th>Price</th>
+                        <th>Quantity</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for product in products %}
                     <tr>
-                        <td>{{ product.name }}</td>
-                        <td>${{ product.price }}</td>
+                        <td class="name">{{ product.name }}</td>
+                        <td class="price">{{ product.price }}</td>
+                        <td>
+                            <input type="number" value="1" class="form-control input-sm quantity" style="width: 70px">
+                        </td>
 
                         <td><a href="{{ path('cart_delete', {'id': product.id}) }}">Delete</a></td>
                     </tr>
@@ -33,10 +37,64 @@
         </div>
     </div>
 
-    <p><b>Total: </b>${{ total }}</p>
+    <p id="total"></p>
 
     <hr>
     {% if total > 0 %}
-        <a href="{{ path('payment') }}" class="btn btn-info">Process payment</a>
+        <button class="btn btn-info" id="processPayment">Process payment</button>
     {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        function getProducts() {
+            let tr = $('tr');
+
+            let products = [];
+
+            tr.each(function() {
+
+                let name = $(this).find('.name').html();
+                let price = parseFloat($(this).find('.price').html());
+                let quantity = $(this).find('.quantity').val();
+
+                if(!name) {
+                    return;
+                }
+
+                products.push({name: name, price: price, quantity: quantity});
+            });
+
+            return products;
+        }
+
+        function getTotal(products) {
+            let total = 0;
+
+            for(let i = 0; i < products.length; i++) {
+                total += products[i].price * products[i].quantity;
+            }
+
+            return total;
+        }
+
+        function showTotal(products) {
+
+            let total = getTotal(products);
+
+            $('#total').html('Total: <b>$' + total + "</b>");
+        }
+
+        $(document).ready(function(){
+
+            showTotal(getProducts());
+
+            $('.quantity').change(function(){
+                showTotal(getProducts());
+            });
+        });
+    </script>
+
 {% endblock %}
