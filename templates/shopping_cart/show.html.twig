@@ -14,6 +14,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>Price</th>
                         <th>Quantity</th>
@@ -21,15 +22,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for product in products %}
+                {% for value in productList %}
                     <tr>
-                        <td class="name">{{ product.name }}</td>
-                        <td class="price">{{ product.price }}</td>
+                        <td class="product-id">{{ value['product'].id }}</td>
+                        <td>{{ value['product'].name }}</td>
+                        <td class="price">{{ value['product'].price }} USD</td>
                         <td>
-                            <input type="number" value="1" class="form-control input-sm quantity" style="width: 70px">
+                            <input type="number" value="{{ value['quantity'] }}" class="form-control input-sm quantity" style="width: 70px">
                         </td>
 
-                        <td><a href="{{ path('cart_delete', {'id': product.id}) }}">Delete</a></td>
+                        <td><a href="{{ path('cart_delete', {'id': value['product'].id}) }}">Delete</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -56,15 +58,15 @@
 
             tr.each(function() {
 
-                let name = $(this).find('.name').html();
+                let id = parseInt($(this).find('.product-id').html());
                 let price = parseFloat($(this).find('.price').html());
-                let quantity = $(this).find('.quantity').val();
+                let quantity = parseInt($(this).find('.quantity').val());
 
-                if(!name) {
+                if(!id) {
                     return;
                 }
 
-                products.push({name: name, price: price, quantity: quantity});
+                products.push({id: id, price: price, quantity: quantity});
             });
 
             return products;
@@ -93,6 +95,27 @@
 
             $('.quantity').change(function(){
                 showTotal(getProducts());
+                console.log(getProducts());
+            });
+
+            $('#processPayment').click(function() {
+                let products = getProducts();
+
+                console.log('clicked');
+                console.log(products);
+
+                $.ajax({
+                    url: "/cart/update",
+                    method: 'POST',
+                    data: {'products': products},
+                    success: function(data) {
+                        console.log(data);
+                        location.href = "/payment";
+                    },
+                    error: function(data) {
+                        console.log(data);
+                    }
+                });
             });
         });
     </script>

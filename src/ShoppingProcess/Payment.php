@@ -41,22 +41,23 @@ class Payment
 
         $customer = Customer::create(['email' => $user->getEmail(), 'source' => $this->token]);
 
-        $products = $cart->getProductList();
+        $productList = $cart->getProductList();
         $orderDetails = [];
 
-        foreach($products as $product) {
+        foreach($productList as $value) {
             $charge = Charge::create(
                 [
-                    'amount' => $product->getPrice() * 100,
+                    'amount' => ($value['product']->getPrice() * 100) * $value['quantity'],
                     'currency' => $currency,
-                    'description' => $product->getName(),
+                    'description' => $value['product']->getName().' ('.$value['quantity'].')',
                     'customer' => $customer->id
                 ]
             );
 
             $orderDetails[] = [
                 'charge' => $charge,
-                'product' => $product,
+                'product' => $value['product'],
+                'quantity' => $value['quantity'],
                 'user' => $user
             ];
         }

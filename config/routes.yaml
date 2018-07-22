@@ -29,6 +29,10 @@ cart_show:
     path: /cart
     controller: App\Controller\ShoppingCartController:show
 
+cart_update:
+    path: /cart/update
+    controller: App\Controller\ShoppingCartController:updateProducts
+
 cart_delete:
     path: /cart/delete/{id}
     controller: App\Controller\ShoppingCartController::deleteProduct

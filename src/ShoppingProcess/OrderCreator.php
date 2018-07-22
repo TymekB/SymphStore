@@ -30,7 +30,9 @@ class OrderCreator
             $order = new Order();
             $order->setId($value['charge']->id);
             $order->setProduct($value['product']);
+            $order->setQUantity($value['quantity']);
             $order->setUser($value['user']);
+
 
             $this->em->persist($order);
         }

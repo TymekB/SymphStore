@@ -26,7 +26,10 @@
             </div>
         </div>
     </div>
+{% endblock %}
 
-
-
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://js.stripe.com/v3"></script>
+    <script src="{{ asset('js/stripe.js') }}"></script>
 {% endblock %}

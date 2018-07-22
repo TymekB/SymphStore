@@ -7,7 +7,10 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Product name</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total price</th>
             <th>Status</th>
         </tr>
         </thead>
@@ -17,6 +20,9 @@
             <tr>
                 <td>{{ order.id }}</td>
                 <td>{{ order.product.name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.product.price }} <b>USD</b></td>
+                <td>{{ order.product.price * order.quantity }} <b>USD</b></td>
 
                 {% if order.status == 1 %}
                     <td><span class="label label-default">waiting for a provider</span></td>

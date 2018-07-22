@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\ShoppingProcess\Cart;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ShoppingCartController extends Controller
@@ -19,10 +20,10 @@ class ShoppingCartController extends Controller
 
     public function show()
     {
-        $products = $this->cart->getProductList();
+        $productList = $this->cart->getProductList();
         $total = $this->cart->getTotalPrice();
 
-        return $this->render('shopping_cart/show.html.twig', ['products' => $products, 'total' => $total]);
+        return $this->render('shopping_cart/show.html.twig', ['productList' => $productList, 'total' => $total]);
     }
 
 
@@ -44,6 +45,19 @@ class ShoppingCartController extends Controller
         return $this->redirectToRoute('product_show', ['name' => $product->getSlug()]);
     }
 
+    public function updateProducts(Request $request)
+    {
+        $products = $request->request->get('products');
+
+        if(!$request->isXmlHttpRequest() || !$products) {
+            throw $this->createNotFoundException();
+        }
+
+        $success = $this->cart->updateProducts($products);
+
+        return $this->json(['success' => $success]);
+    }
+
     /**
      * @ParamConverter("product", class="App\Entity\Product")
      * @param Product $product
@@ -60,4 +74,5 @@ class ShoppingCartController extends Controller
 
         return $this->redirectToRoute('cart_show');
     }
+
 }
