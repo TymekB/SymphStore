@@ -11,7 +11,7 @@
         </div>
 
         <div class="panel-body">
-            <table class="table">
+            <table class="table" id="cart">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -50,56 +50,28 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="{{ asset('js/Cart.js') }}"></script>
     <script>
-        function getProducts() {
-            let tr = $('tr');
+        function showTotal(cart) {
 
-            let products = [];
-
-            tr.each(function() {
-
-                let id = parseInt($(this).find('.product-id').html());
-                let price = parseFloat($(this).find('.price').html());
-                let quantity = parseInt($(this).find('.quantity').val());
-
-                if(!id) {
-                    return;
-                }
-
-                products.push({id: id, price: price, quantity: quantity});
-            });
-
-            return products;
-        }
-
-        function getTotal(products) {
-            let total = 0;
-
-            for(let i = 0; i < products.length; i++) {
-                total += products[i].price * products[i].quantity;
-            }
-
-            return total;
-        }
-
-        function showTotal(products) {
-
-            let total = getTotal(products);
+            let total = cart.getTotal();
 
             $('#total').html('Total: <b>$' + total + "</b>");
         }
 
         $(document).ready(function(){
 
-            showTotal(getProducts());
+            let cart = new Cart('#cart');
+
+            showTotal(cart);
 
             $('.quantity').change(function(){
-                showTotal(getProducts());
-                console.log(getProducts());
+                showTotal(cart);
+                console.log(cart.getProducts());
             });
 
             $('#processPayment').click(function() {
-                let products = getProducts();
+                let products = cart.getProducts();
 
                 console.log('clicked');
                 console.log(products);
@@ -118,6 +90,9 @@
                 });
             });
         });
+
+
     </script>
+
 
 {% endblock %}

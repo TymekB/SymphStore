@@ -5,9 +5,11 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
+ * @Vich\Uploadable
  */
 class Product
 {
@@ -43,6 +45,13 @@ class Product
      * @ORM\Column(type="string", length=255)
      */
     private $img;
+
+    /**
+     * @Vich\UploadableField(mapping="product_images", fileNameProperty="image")
+     * @var File
+     */
+
+    private $imageFile;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Discount", mappedBy="product")
@@ -146,16 +155,37 @@ class Product
         return $this;
     }
 
-    public function getImg(): ?string
+    public function setImg($img)
+    {
+        $this->img = $img;
+    }
+
+    public function getImg()
     {
         return $this->img;
     }
 
-    public function setImg(string $img): self
+    public function setImage($image)
     {
-        $this->img = $img;
+        $this->img = $image;
+    }
 
-        return $this;
+    public function getImage()
+    {
+        return $this->img;
+    }
+
+    /**
+     * @param File $imageFile
+     */
+    public function setImageFile(File $imageFile): void
+    {
+        $this->imageFile = $imageFile;
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 
     /**
@@ -219,4 +249,6 @@ class Product
 
         return $this;
     }
+
+
 }

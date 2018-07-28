@@ -12,7 +12,7 @@ namespace App\ShoppingProcess;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use App\ShoppingProcess\CartException\ProductNotFoundException;
-use App\ShoppingProcess\CartException\ProductsFieldsNotFoundInProductList;
+use App\ShoppingProcess\CartException\ProductKeyNotFound;
 use App\ShoppingProcess\CartException\ProductsSizeIsNotEqualBasketSize;
 use App\ShoppingProcess\CartException\ProductsSizeIsNotEqualProductListSize;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -124,8 +124,11 @@ class Cart
 
                         $key = $this->getProductKey($value['product']);
 
-                        if ($key) {
+                        if($key !== false) {
                             $basket[$key]['quantity'] = $product['quantity'];
+                        }
+                        else {
+                            throw new ProductKeyNotFound();
                         }
                     }
                 }

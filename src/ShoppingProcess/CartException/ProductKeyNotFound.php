@@ -9,7 +9,7 @@
 namespace App\ShoppingProcess\CartException;
 
 
-class ProductsFieldsNotFoundInProductList extends \Exception
+class ProductKeyNotFound extends \Exception
 {
 
 }
