@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
@@ -54,14 +52,9 @@ class Product
     private $imageFile;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Discount", mappedBy="product")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Discount", inversedBy="products")
      */
-    private $discounts;
-
-    public function __construct()
-    {
-        $this->discounts = new ArrayCollection();
-    }
+    private $discount;
 
     public function __toString()
     {
@@ -99,13 +92,11 @@ class Product
 
     public function getPrice(): ?float
     {
-        $discount = $this->getDiscount();
-
-        if(!$discount) {
+        if(!$this->discount) {
             return $this->price;
         }
 
-        $discountedPrice = $this->price * ((100 - $discount) / 100);
+        $discountedPrice = $this->price * ((100 - $this->discount->getPercent()) / 100);
 
         return round($discountedPrice, 2, PHP_ROUND_HALF_UP);
     }
@@ -120,21 +111,6 @@ class Product
     public function getNotDiscountedPrice()
     {
         return $this->price;
-    }
-
-    public function getDiscount()
-    {
-        $discount = 0;
-
-        foreach($this->discounts as $value) {
-            $discount += $value->getPercent();
-        }
-
-        if($discount == 0) {
-            return false;
-        }
-
-        return $discount;
     }
 
     public function getSlug(): ?string
@@ -182,33 +158,14 @@ class Product
         return $this->imageFile;
     }
 
-    /**
-     * @return Collection|Discount[]
-     */
-    public function getDiscounts(): Collection
+    public function getDiscount(): ?Discount
     {
-        return $this->discounts;
+        return $this->discount;
     }
 
-    public function addDiscount(Discount $discount): self
+    public function setDiscount(?Discount $discount): self
     {
-        if (!$this->discounts->contains($discount)) {
-            $this->discounts[] = $discount;
-            $discount->setProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDiscount(Discount $discount): self
-    {
-        if ($this->discounts->contains($discount)) {
-            $this->discounts->removeElement($discount);
-            // set the owning side to null (unless already changed)
-            if ($discount->getProduct() === $this) {
-                $discount->setProduct(null);
-            }
-        }
+        $this->discount = $discount;
 
         return $this;
     }

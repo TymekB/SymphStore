@@ -16,11 +16,6 @@
         {% for order in orders %}
             <tr>
                 <td>{{ order.id }}</td>
-                {#<td>{{ order.product.name }}</td>#}
-                {#<td>{{ order.quantity }}</td>#}
-                {#<td>{{ order.product.price }} <b>USD</b></td>#}
-                {#<td>{{ order.product.price * order.quantity }} <b>USD</b></td>#}
-
                 <td><a href="{{ path('order_details', {'id': order.id}) }}">Show details</a></td>
 
                 {% if order.status == 1 %}

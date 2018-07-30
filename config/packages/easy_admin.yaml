@@ -8,7 +8,7 @@ easy_admin:
                   - 'name'
                   - 'description'
                   - 'price'
-                  - 'discounts'
+                  - 'discount'
                   - { property: 'imageFile', type: 'vich_image' }
         Discount:
             class: App\Entity\Discount

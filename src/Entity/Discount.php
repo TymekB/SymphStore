@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,9 +24,14 @@ class Discount
     private $percent;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="discounts")
+     * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="discount")
      */
-    private $product;
+    private $products;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function __toString()
     {
@@ -48,14 +55,33 @@ class Discount
         return $this;
     }
 
-    public function getProduct(): ?Product
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProducts(): Collection
     {
-        return $this->product;
+        return $this->products;
     }
 
-    public function setProduct(?Product $product): self
+    public function addProduct(Product $product): self
     {
-        $this->product = $product;
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+            $product->setDiscount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->products->contains($product)) {
+            $this->products->removeElement($product);
+            // set the owning side to null (unless already changed)
+            if ($product->getDiscount() === $this) {
+                $product->setDiscount(null);
+            }
+        }
 
         return $this;
     }
