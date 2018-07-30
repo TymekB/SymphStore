@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Order;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,5 +26,14 @@ class OrdersController extends Controller
         $orders = $this->getUser()->getOrders();
 
         return $this->render('orders/list.html.twig', ['orders' => $orders]);
+    }
+
+    /**
+     * @ParamConverter("order", class="App\Entity\Order")
+     * @param Order $order
+     */
+    public function show(Order $order)
+    {
+        return $this->render('orders/details.html.twig', ['order' => $order]);
     }
 }

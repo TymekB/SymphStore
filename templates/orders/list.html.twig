@@ -7,10 +7,7 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Total price</th>
+            <th>Details</th>
             <th>Status</th>
         </tr>
         </thead>
@@ -19,19 +16,20 @@
         {% for order in orders %}
             <tr>
                 <td>{{ order.id }}</td>
-                <td>{{ order.product.name }}</td>
-                <td>{{ order.quantity }}</td>
-                <td>{{ order.product.price }} <b>USD</b></td>
-                <td>{{ order.product.price * order.quantity }} <b>USD</b></td>
+                {#<td>{{ order.product.name }}</td>#}
+                {#<td>{{ order.quantity }}</td>#}
+                {#<td>{{ order.product.price }} <b>USD</b></td>#}
+                {#<td>{{ order.product.price * order.quantity }} <b>USD</b></td>#}
+
+                <td><a href="{{ path('order_details', {'id': order.id}) }}">Show details</a></td>
 
                 {% if order.status == 1 %}
-                    <td><span class="label label-default">waiting for a provider</span></td>
+                    <td><span class="label label-default">Processing</span></td>
                 {% elseif order.status == 2 %}
-                    <td><span class="label label-info">sent</span></td>
+                    <td><span class="label label-info">Sent</span></td>
                 {% else %}
-                    <td><span class="label label-success">received</span></td>
+                    <td><span class="label label-success">Received</span></td>
                 {% endif %}
-
 
             </tr>
         {% endfor %}

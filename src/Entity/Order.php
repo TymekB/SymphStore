@@ -83,6 +83,17 @@ class Order
         return $this->orderedProducts;
     }
 
+    public function getTotalPrice()
+    {
+        $total = 0;
+
+        foreach($this->orderedProducts as $orderedProduct) {
+            $total += $orderedProduct->getProduct()->getPrice() * $orderedProduct->getQuantity();
+        }
+
+        return $total;
+    }
+
     public function addOrderedProduct(OrderedProduct $orderedProduct): self
     {
         if (!$this->orderedProducts->contains($orderedProduct)) {

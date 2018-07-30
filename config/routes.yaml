@@ -42,5 +42,9 @@ payment:
     controller: App\Controller\PaymentController::processPayment
 
 order_history:
-    path: /history
+    path: /order/history
     controller: App\Controller\OrdersController::list
+
+order_details:
+    path: /order/details/{id}
+    controller: App\Controller\OrdersController::show
