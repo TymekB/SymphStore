@@ -8,6 +8,7 @@
 
 namespace App\ShoppingProcess;
 
+use App\Entity\OrderedProduct;
 use App\Entity\User;
 use App\ShoppingProcess\PaymentException\TokenNotFound;
 use Stripe\Charge;
@@ -42,10 +43,10 @@ class Payment
         $customer = Customer::create(['email' => $user->getEmail(), 'source' => $this->token]);
 
         $productList = $cart->getProductList();
-        $orderDetails = [];
+        $orderDetails = ['user' => $user, 'products' => []];
 
         foreach($productList as $value) {
-            $charge = Charge::create(
+            Charge::create(
                 [
                     'amount' => ($value['product']->getPrice() * 100) * $value['quantity'],
                     'currency' => $currency,
@@ -54,12 +55,12 @@ class Payment
                 ]
             );
 
-            $orderDetails[] = [
-                'charge' => $charge,
-                'product' => $value['product'],
-                'quantity' => $value['quantity'],
-                'user' => $user
-            ];
+            $orderedProduct = new OrderedProduct();
+
+            $orderedProduct->setProduct($value['product']);
+            $orderedProduct->setQuantity($value['quantity']);
+
+            $orderDetails['products'][] = $orderedProduct;
         }
 
         return $orderDetails;

@@ -26,17 +26,16 @@ class OrderCreator
 
     public function create(array $orderDetails)
     {
-        foreach($orderDetails as $value) {
-            $order = new Order();
-            $order->setId($value['charge']->id);
-            $order->setProduct($value['product']);
-            $order->setQUantity($value['quantity']);
-            $order->setUser($value['user']);
+        $order = new Order();
+        $order->setUser($orderDetails['user']);
 
+        foreach($orderDetails['products'] as $product) {
+            $order->addOrderedProduct($product);
 
-            $this->em->persist($order);
+            $this->em->persist($product);
         }
 
+        $this->em->persist($order);
         $this->em->flush();
 
         return true;

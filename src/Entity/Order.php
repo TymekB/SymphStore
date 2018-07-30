@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,17 +13,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Order
 {
     /**
-     * @ORM\Column(type="guid")
      * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="UUID")
-     *
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
      */
     private $id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="orders")
-     */
-    private $product;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
@@ -34,9 +30,14 @@ class Order
     private $status = 1;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToMany(targetEntity="App\Entity\OrderedProduct", inversedBy="orders")
      */
-    private $quantity;
+    private $orderedProducts;
+
+    public function __construct()
+    {
+        $this->orderedProducts = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -46,18 +47,6 @@ class Order
     public function setId($id)
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getProduct(): ?Product
-    {
-        return $this->product;
-    }
-
-    public function setProduct(?Product $product): self
-    {
-        $this->product = $product;
 
         return $this;
     }
@@ -86,14 +75,28 @@ class Order
         return $this;
     }
 
-    public function getQuantity(): ?int
+    /**
+     * @return Collection|OrderedProduct[]
+     */
+    public function getOrderedProducts(): Collection
     {
-        return $this->quantity;
+        return $this->orderedProducts;
     }
 
-    public function setQuantity(int $quantity): self
+    public function addOrderedProduct(OrderedProduct $orderedProduct): self
     {
-        $this->quantity = $quantity;
+        if (!$this->orderedProducts->contains($orderedProduct)) {
+            $this->orderedProducts[] = $orderedProduct;
+        }
+
+        return $this;
+    }
+
+    public function removeOrderedProduct(OrderedProduct $orderedProduct): self
+    {
+        if ($this->orderedProducts->contains($orderedProduct)) {
+            $this->orderedProducts->removeElement($orderedProduct);
+        }
 
         return $this;
     }
