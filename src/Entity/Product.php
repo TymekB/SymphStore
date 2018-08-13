@@ -56,6 +56,11 @@ class Product
      */
     private $discount;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $quantity;
+
     public function __toString()
     {
         return $this->name;
@@ -166,6 +171,18 @@ class Product
     public function setDiscount(?Discount $discount): self
     {
         $this->discount = $discount;
+
+        return $this;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
 
         return $this;
     }
