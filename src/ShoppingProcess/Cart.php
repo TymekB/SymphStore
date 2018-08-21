@@ -107,7 +107,14 @@ class Cart
         return true;
     }
 
-    public function updateProducts(array $products)
+    /**
+     * @param array $products
+     * @return bool
+     * @throws ProductKeyNotFound
+     * @throws ProductsSizeIsNotEqualBasketSize
+     * @throws ProductsSizeIsNotEqualProductListSize
+     */
+    public function updateProducts(array $products) : bool
     {
         $basket = $this->getBasket();
         $productList = $this->getProductList();

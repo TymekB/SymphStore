@@ -3,13 +3,24 @@ easy_admin:
     entities:
         Product:
             class: App\Entity\Product
+            list:
+                fields:
+                  - 'id'
+                  - 'name'
+                  - 'description'
+                  - 'price'
+                  - 'discount'
+                  - 'quantity'
+                  - { property: 'img', type: 'image', base_path: 'images/products'}
             form:
                 fields:
                   - 'name'
                   - 'description'
                   - 'price'
                   - 'discount'
+                  - 'quantity'
                   - { property: 'imageFile', type: 'vich_image' }
+
         Discount:
             class: App\Entity\Discount
 

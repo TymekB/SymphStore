@@ -27,7 +27,7 @@ services:
     slugger:
         class: EasySlugger\Slugger
 
-    App\EventSubscriber\EasyAdminSubscriber:
+    App\EventSubscriber\AddSlugToProductSubscriber:
         arguments:
             $slugger: '@slugger'
 

@@ -14,7 +14,7 @@ use EasySlugger\Slugger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-class EasyAdminSubscriber implements EventSubscriberInterface
+class AddSlugToProductSubscriber implements EventSubscriberInterface
 {
     /**
      * @var Slugger
@@ -22,14 +22,13 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     private $slugger;
 
     /**
-     * EasyAdminSubscriber constructor.
+     * AddSlugToProductSubscriber constructor.
      * @param Slugger $slugger
      */
     public function __construct(Slugger $slugger)
     {
         $this->slugger = $slugger;
     }
-
 
     public static function getSubscribedEvents()
     {
