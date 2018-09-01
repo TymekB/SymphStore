@@ -10,6 +10,8 @@ namespace App\ShoppingProcess;
 
 use App\Entity\OrderedProduct;
 use App\Entity\User;
+use App\ShoppingProcess\Cart\ItemsCollection;
+use App\ShoppingProcess\Order\OrderDetails;
 use App\ShoppingProcess\PaymentException\TokenNotFound;
 use Stripe\Charge;
 use Stripe\Customer;
@@ -21,49 +23,59 @@ class Payment
      * @var string
      */
     private $token;
+    /**
+     * @var OrderDetails
+     */
+    private $orderDetails;
 
-    public function __construct($apiKey, $token = '')
+    public function __construct(OrderDetails $orderDetails, $apiKey, $token = '')
     {
         Stripe::setApiKey($apiKey);
 
         $this->token = $token;
+        $this->orderDetails = $orderDetails;
     }
 
     public function setToken($token)
     {
         $this->token = $token;
+
+        return $this;
     }
 
-    public function process(User $user, Cart $cart, $currency = 'usd')
+    public function getOrderDetails()
+    {
+        return $this->orderDetails;
+    }
+
+    public function process(User $user, ItemsCollection $items, $currency = 'usd')
     {
         if(!$this->token) {
             throw new TokenNotFound();
         }
 
+        $this->orderDetails->setUser($user);
         $customer = Customer::create(['email' => $user->getEmail(), 'source' => $this->token]);
 
-        $productList = $cart->getProductList();
-        $orderDetails = ['user' => $user, 'products' => []];
-
-        foreach($productList as $value) {
+        foreach($items as $item) {
             Charge::create(
                 [
-                    'amount' => ($value['product']->getPrice() * 100) * $value['quantity'],
+                    'amount' => ($item->getProduct()->getPrice() * 100) * $item->getQuantity(),
                     'currency' => $currency,
-                    'description' => $value['product']->getName().' ('.$value['quantity'].')',
+                    'description' => $item->getProduct()->getName().' ('.$item->getQuantity().')',
                     'customer' => $customer->id
                 ]
             );
 
             $orderedProduct = new OrderedProduct();
 
-            $orderedProduct->setProduct($value['product']);
-            $orderedProduct->setQuantity($value['quantity']);
+            $orderedProduct->setProduct($item->getProduct());
+            $orderedProduct->setQuantity($item->getQuantity());
 
-            $orderDetails['products'][] = $orderedProduct;
+            $this->orderDetails->addOrderedProduct($orderedProduct);
         }
 
-        return $orderDetails;
+        return true;
     }
 
 }

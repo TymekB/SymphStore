@@ -3,13 +3,13 @@
  * Created by PhpStorm.
  * User: tymek
  * Date: 21.07.18
- * Time: 16:01
+ * Time: 22:36
  */
 
 namespace App\ShoppingProcess\CartException;
 
 
-class ProductsSizeIsNotEqualProductListSize extends \Exception
+class ProductsSizeIsNotEqualItemsSizeException extends \Exception
 {
 
 }

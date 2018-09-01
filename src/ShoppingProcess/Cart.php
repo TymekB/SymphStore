@@ -11,10 +11,11 @@ namespace App\ShoppingProcess;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
-use App\ShoppingProcess\CartException\ProductNotFoundException;
-use App\ShoppingProcess\CartException\ProductKeyNotFound;
-use App\ShoppingProcess\CartException\ProductsSizeIsNotEqualBasketSize;
-use App\ShoppingProcess\CartException\ProductsSizeIsNotEqualProductListSize;
+use App\ShoppingProcess\Cart\ItemsCollection;
+use App\ShoppingProcess\Cart\Item;
+use App\ShoppingProcess\CartException\ItemNotFoundException;
+use App\ShoppingProcess\CartException\ProductsSizeIsNotEqualItemsSizeException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Cart
@@ -36,73 +37,79 @@ class Cart
         $this->productRepository = $productRepository;
     }
 
-    private function setBasket(array $basket)
+    private function getItems(): ItemsCollection
     {
-        $this->session->set('basket', $basket);
+        return $this->session->get('items', new ItemsCollection());
     }
 
-    private function getBasket()
+    public function setItems(ItemsCollection $items)
     {
-        return $this->session->get('basket', []);
+        $this->session->set('items', $items);
+
+        return $this;
     }
 
-    public function getProductList()
+    public function getItemsWithProducts(): ItemsCollection
     {
-        $basket = $this->getBasket();
-        $productsId = array_column($basket, 'id');
+        $items = $this->getItems();
 
-        $products = $this->productRepository->findBy(['id' => $productsId]);
+        $products = $this->productRepository->findBy(
+            [
+                'id' => $items->getProductsId()
+            ]);
 
-        if(count($products) != count($basket)) {
-            throw new ProductsSizeIsNotEqualBasketSize();
+        if(count($products) != count($items)) {
+            throw new ProductsSizeIsNotEqualItemsSizeException();
         }
 
-        $productList = [];
+        $itemsWithProducts = $items->map(function(Item $item) use ($products){
 
-        foreach($products as $product) {
-            foreach($basket as $value) {
-                if($product->getId() == $value['id']) {
-                    $productList[] =  [
-                        'product' => $product,
-                        'quantity' => $value['quantity']
-                    ];
+            foreach($products as $product) {
+
+                if($product->getId() == $item->getProductId()) {
+                    return $item->setProduct($product);
                 }
             }
-        }
 
-        return $productList;
+            return $item;
+
+        });
+
+        return $itemsWithProducts;
     }
 
-    public function getTotalPrice()
+    public function getTotalAmount()
     {
-        $productList = $this->getProductList();
+        $items = $this->getItemsWithProducts();
         $total = 0;
 
-        if(!$productList) {
+        if(!$items) {
             return $total;
         }
 
-        foreach($productList as $value) {
-            $total += $value['product']->getPrice() * $value['quantity'];
-        }
+        $total = $items->map(function(Item $item){
+            return $item->getProduct()->getPrice() * $item->getQuantity();
+        });
 
-        return $total;
+        return array_sum($total->toArray());
     }
 
     public function addProduct(Product $product, int $quantity = 1)
     {
-        $basket = $this->getBasket();
+        $items = $this->getItems();
+        $item = $items->searchItemByProductId($product->getId());
 
-        $productKey = $this->getProductKey($product);
-
-        if($productKey === false) {
-            $basket[] = ['id' => $product->getId(), 'quantity' => $quantity];
+        if(!$item) {
+            $item = new Item();
+            $item->setProductId($product->getId())->setQuantity($quantity);
         }
         else {
-            $basket[$productKey]['quantity'] += 1;
+            $item->addQuantity($quantity);
         }
 
-        $this->setBasket($basket);
+        $items->addItem($item);
+
+        $this->setItems($items);
 
         return true;
     }
@@ -110,69 +117,45 @@ class Cart
     /**
      * @param array $products
      * @return bool
-     * @throws ProductKeyNotFound
-     * @throws ProductsSizeIsNotEqualBasketSize
-     * @throws ProductsSizeIsNotEqualProductListSize
+     * @throws ProductsSizeIsNotEqualItemsSizeException
      */
-    public function updateProducts(array $products) : bool
+    public function updateProducts(array $products): bool
     {
-        $basket = $this->getBasket();
-        $productList = $this->getProductList();
+        $itemsWithProducts = $this->getItemsWithProducts();
 
-        if(count($products) != count($productList)) {
-            throw new ProductsSizeIsNotEqualProductListSize();
+        if (count($products) != count($itemsWithProducts)) {
+            throw new ProductsSizeIsNotEqualItemsSizeException();
         }
 
-        foreach($productList as $key => $value) {
-            foreach($products as $product) {
-                if($product['id'] == $value['product']->getId() && $product['price'] == $value['product']->getPrice()) {
+        $itemsWithProducts->map(function(Item $item) use($products) {
 
-                    if ($product['quantity'] > 0) {
+                foreach($products as $product) {
 
-                        $key = $this->getProductKey($value['product']);
+                    if ($product->id == $item->getProduct()->getId() && $product->price == $item->getProduct()->getPrice()) {
 
-                        if($key !== false) {
-                            $basket[$key]['quantity'] = $product['quantity'];
+                        if($product->quantity > 0) {
+                            return $item->setQuantity($product->quantity);
                         }
-                        else {
-                            throw new ProductKeyNotFound();
-                        }
+
                     }
                 }
-            }
-        }
 
-        $this->setBasket($basket);
+                return $item;
+        });
 
         return true;
-
-    }
-
-    private function getProductKey(Product $product)
-    {
-        $basket = $this->getBasket();
-        $productFound = false;
-
-        foreach($basket as $key => $value) {
-            if($product->getId() == $value['id']) {
-                $productFound = $key;
-            }
-        }
-
-        return $productFound;
     }
 
     public function deleteProduct(Product $product)
     {
-        $basket = $this->getBasket();
-        $productFound = $this->getProductKey($product);
+        $items = $this->getItems();
+        $item = $items->searchItemByProductId($product->getID());
 
-        if($productFound === false) {
-            throw new ProductNotFoundException();
+        if(!$item) {
+            throw new ItemNotFoundException();
         }
 
-        unset($basket[$productFound]);
-        $this->setBasket($basket);
+        $items->deleteItem($item);
 
         return true;
     }

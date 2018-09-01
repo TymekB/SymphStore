@@ -29,7 +29,7 @@ class OrderedProduct
     private $orders;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Product", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="orderedProducts")
      * @ORM\JoinColumn(nullable=false)
      */
     private $product;
@@ -89,7 +89,7 @@ class OrderedProduct
         return $this->product;
     }
 
-    public function setProduct(Product $product): self
+    public function setProduct(?Product $product): self
     {
         $this->product = $product;
 

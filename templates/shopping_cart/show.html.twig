@@ -22,16 +22,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for value in productList %}
+                {% for item in items %}
                     <tr>
-                        <td class="product-id">{{ value['product'].id }}</td>
-                        <td>{{ value['product'].name }}</td>
-                        <td class="price">{{ value['product'].price }} USD</td>
+                        <td class="product-id">{{ item.product.id }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td class="price">{{ item.product.price }} USD</td>
                         <td>
-                            <input type="number" value="{{ value['quantity'] }}" class="form-control input-sm quantity" style="width: 70px">
+                            <input type="number" value="{{ item.quantity }}" class="form-control input-sm quantity" style="width: 70px">
                         </td>
 
-                        <td><a href="{{ path('cart_delete', {'id': value['product'].id}) }}">Delete</a></td>
+                        <td><a href="{{ path('cart_delete', {'id': item.product.id }) }}">Delete</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -71,10 +71,7 @@
             });
 
             $('#processPayment').click(function() {
-                let products = cart.getProducts();
-
-                console.log('clicked');
-                console.log(products);
+                let products = JSON.stringify(cart.getProducts());
 
                 $.ajax({
                     url: "/cart/update",

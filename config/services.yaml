@@ -39,6 +39,9 @@ services:
         arguments:
             $apiKey: '%env(STRIPE_SECRET)%'
 
+    orderDetails:
+        class: App\ShoppingProccess\Order\OrderDetails
+
     App\ShoppingProcess\Cart:
         arguments:
             $session: '@session'

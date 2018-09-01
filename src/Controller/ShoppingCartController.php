@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\ShoppingProcess\Cart;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class ShoppingCartController extends Controller
 {
@@ -20,10 +22,10 @@ class ShoppingCartController extends Controller
 
     public function show()
     {
-        $productList = $this->cart->getProductList();
-        $total = $this->cart->getTotalPrice();
+        $items = $this->cart->getItemsWithProducts();
+        $total = $this->cart->getTotalAmount();
 
-        return $this->render('shopping_cart/show.html.twig', ['productList' => $productList, 'total' => $total]);
+        return $this->render('shopping_cart/show.html.twig', ['items' => $items, 'total' => $total]);
     }
 
 
@@ -53,6 +55,9 @@ class ShoppingCartController extends Controller
             throw $this->createNotFoundException();
         }
 
+        $jsonDecode = new JsonDecode();
+        $products = $jsonDecode->decode($products, JsonEncoder::FORMAT);
+
         $success = $this->cart->updateProducts($products);
 
         return $this->json(['success' => $success]);
@@ -62,7 +67,7 @@ class ShoppingCartController extends Controller
      * @ParamConverter("product", class="App\Entity\Product")
      * @param Product $product
      * @return Response
-     * @throws \App\ShoppingProcess\CartException\ProductNotFoundException
+     * @throws \App\ShoppingProcess\CartException\ItemNotFoundException
      */
     public function deleteProduct(Product $product)
     {

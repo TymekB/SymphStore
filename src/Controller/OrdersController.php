@@ -31,6 +31,7 @@ class OrdersController extends Controller
     /**
      * @ParamConverter("order", class="App\Entity\Order")
      * @param Order $order
+     * @return Response
      */
     public function show(Order $order)
     {

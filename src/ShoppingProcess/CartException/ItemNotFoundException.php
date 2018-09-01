@@ -9,7 +9,7 @@
 namespace App\ShoppingProcess\CartException;
 
 
-class ProductNotFoundException extends \Exception
+class ItemNotFoundException extends \Exception
 {
 
 }

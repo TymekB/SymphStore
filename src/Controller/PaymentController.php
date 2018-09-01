@@ -37,12 +37,14 @@ class PaymentController extends Controller
 
     public function processPayment(Request $request)
     {
-        $total = $this->cart->getTotalPrice();
+        $total = $this->cart->getTotalAmount();
         $token = $request->request->get('stripeToken');
 
         if($token && $total > 0) {
             $this->payment->setToken($token);
-            $orderDetails = $this->payment->process($this->getUser(), $this->cart);
+
+            $this->payment->process($this->getUser(), $this->cart->getItemsWithProducts());
+            $orderDetails = $this->payment->getOrderDetails();
 
             $this->orderCreator->create($orderDetails);
 

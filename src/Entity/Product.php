@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
@@ -60,6 +62,16 @@ class Product
      * @ORM\Column(type="integer")
      */
     private $quantity;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderedProduct", mappedBy="product", orphanRemoval=true)
+     */
+    private $orderedProducts;
+
+    public function __construct()
+    {
+        $this->orderedProducts = new ArrayCollection();
+    }
 
     public function __toString()
     {
@@ -183,6 +195,37 @@ class Product
     public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|OrderedProduct[]
+     */
+    public function getOrderedProducts(): Collection
+    {
+        return $this->orderedProducts;
+    }
+
+    public function addOrderedProduct(OrderedProduct $orderedProduct): self
+    {
+        if (!$this->orderedProducts->contains($orderedProduct)) {
+            $this->orderedProducts[] = $orderedProduct;
+            $orderedProduct->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderedProduct(OrderedProduct $orderedProduct): self
+    {
+        if ($this->orderedProducts->contains($orderedProduct)) {
+            $this->orderedProducts->removeElement($orderedProduct);
+            // set the owning side to null (unless already changed)
+            if ($orderedProduct->getProduct() === $this) {
+                $orderedProduct->setProduct(null);
+            }
+        }
 
         return $this;
     }

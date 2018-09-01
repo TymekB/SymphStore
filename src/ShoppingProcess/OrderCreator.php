@@ -10,6 +10,7 @@ namespace App\ShoppingProcess;
 
 
 use App\Entity\Order;
+use App\ShoppingProcess\Order\OrderDetails;
 use Doctrine\ORM\EntityManagerInterface;
 
 class OrderCreator
@@ -24,12 +25,12 @@ class OrderCreator
         $this->em = $em;
     }
 
-    public function create(array $orderDetails)
+    public function create(OrderDetails $orderDetails)
     {
         $order = new Order();
-        $order->setUser($orderDetails['user']);
+        $order->setUser($orderDetails->getUser());
 
-        foreach($orderDetails['products'] as $product) {
+        foreach($orderDetails->getOrderedProducts() as $product) {
             $order->addOrderedProduct($product);
 
             $this->em->persist($product);
