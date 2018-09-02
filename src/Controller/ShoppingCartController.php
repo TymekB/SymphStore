@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\ShoppingProcess\Cart;
+use App\ShoppingProcess\CartException\ProductNotInStockException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,12 +37,18 @@ class ShoppingCartController extends Controller
      */
     public function addProduct(Product $product)
     {
-        $productAdded = $this->cart->addProduct($product);
+        try {
+            $productAdded = $this->cart->addProduct($product);
 
-        if($productAdded) {
-            $this->addFlash('success', 'Product has been added to your cart');
-        } else {
-            $this->addFlash('info', 'Product already exists in your cart');
+            if($productAdded) {
+                $this->addFlash('success', 'Product has been added to your cart');
+            }
+            else {
+                $this->addFlash('info', 'Product already exists in your cart');
+            }
+        }
+        catch(ProductNotInStockException $e) {
+            $this->addFlash("info", "Product not in stock");
         }
 
         return $this->redirectToRoute('product_show', ['name' => $product->getSlug()]);
@@ -50,6 +57,7 @@ class ShoppingCartController extends Controller
     public function updateProducts(Request $request)
     {
         $products = $request->request->get('products');
+        $result = ["success" => true, "msg" => "Products updated."];
 
         if(!$request->isXmlHttpRequest() || !$products) {
             throw $this->createNotFoundException();
@@ -58,9 +66,15 @@ class ShoppingCartController extends Controller
         $jsonDecode = new JsonDecode();
         $products = $jsonDecode->decode($products, JsonEncoder::FORMAT);
 
-        $success = $this->cart->updateProducts($products);
+        try {
+            $this->cart->updateProducts($products);
+        }
+        catch(ProductNotInStockException $e) {
+            $result['success'] = false;
+            $result['msg'] = $e->getMessage();
+        }
 
-        return $this->json(['success' => $success]);
+        return $this->json($result);
     }
 
     /**

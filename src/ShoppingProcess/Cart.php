@@ -14,6 +14,7 @@ use App\Repository\ProductRepository;
 use App\ShoppingProcess\Cart\ItemsCollection;
 use App\ShoppingProcess\Cart\Item;
 use App\ShoppingProcess\CartException\ItemNotFoundException;
+use App\ShoppingProcess\CartException\ProductNotInStockException;
 use App\ShoppingProcess\CartException\ProductsSizeIsNotEqualItemsSizeException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -96,6 +97,10 @@ class Cart
 
     public function addProduct(Product $product, int $quantity = 1)
     {
+        if($product->getQuantity() < $quantity) {
+            throw new ProductNotInStockException();
+        }
+
         $items = $this->getItems();
         $item = $items->searchItemByProductId($product->getId());
 
@@ -133,10 +138,12 @@ class Cart
 
                     if ($product->id == $item->getProduct()->getId() && $product->price == $item->getProduct()->getPrice()) {
 
-                        if($product->quantity > 0) {
-                            return $item->setQuantity($product->quantity);
+                        if($item->getProduct()->getQuantity() < $product->quantity || $product->quantity <= 0) {
+
+                            throw new ProductNotInStockException($item->getProduct()->getName(). " not in stock.");
                         }
 
+                        return $item->setQuantity($product->quantity);
                     }
                 }
 
