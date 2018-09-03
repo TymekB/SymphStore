@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\ShoppingProcess\Cart;
+use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
 use App\ShoppingProcess\CartException\ProductNotInStockException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,15 +16,20 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class ShoppingCartController extends Controller
 {
     private $cart;
+    /**
+     * @var ItemsProductDecorator
+     */
+    private $itemsProductDecorator;
 
-    public function __construct(Cart $cart)
+    public function __construct(Cart $cart, ItemsProductDecorator $itemsProductDecorator)
     {
         $this->cart = $cart;
+        $this->itemsProductDecorator = $itemsProductDecorator;
     }
 
     public function show()
     {
-        $items = $this->cart->getItemsWithProducts();
+        $items = $this->itemsProductDecorator->getItemsWithProducts($this->cart->getItems());
         $total = $this->cart->getTotalAmount();
 
         return $this->render('shopping_cart/show.html.twig', ['items' => $items, 'total' => $total]);

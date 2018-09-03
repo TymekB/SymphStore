@@ -11,6 +11,7 @@ namespace App\ShoppingProcess;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
 use App\ShoppingProcess\Cart\ItemsCollection;
 use App\ShoppingProcess\Cart\Item;
 use App\ShoppingProcess\CartException\ItemNotFoundException;
@@ -26,19 +27,19 @@ class Cart
      */
     private $session;
     /**
-     * @var ProductRepository
+     * @var ItemsProductDecorator
      */
-    private $productRepository;
+    private $itemsProductDecorator;
 
-    public function __construct(SessionInterface $session, ProductRepository $productRepository)
+    public function __construct(SessionInterface $session, ItemsProductDecorator $itemsProductDecorator)
     {
         $this->session = $session;
         $this->session->start();
 
-        $this->productRepository = $productRepository;
+        $this->itemsProductDecorator = $itemsProductDecorator;
     }
 
-    private function getItems(): ItemsCollection
+    public function getItems(): ItemsCollection
     {
         return $this->session->get('items', new ItemsCollection());
     }
@@ -50,38 +51,9 @@ class Cart
         return $this;
     }
 
-    public function getItemsWithProducts(): ItemsCollection
-    {
-        $items = $this->getItems();
-
-        $products = $this->productRepository->findBy(
-            [
-                'id' => $items->getProductsId()
-            ]);
-
-        if(count($products) != count($items)) {
-            throw new ProductsSizeIsNotEqualItemsSizeException();
-        }
-
-        $itemsWithProducts = $items->map(function(Item $item) use ($products){
-
-            foreach($products as $product) {
-
-                if($product->getId() == $item->getProductId()) {
-                    return $item->setProduct($product);
-                }
-            }
-
-            return $item;
-
-        });
-
-        return $itemsWithProducts;
-    }
-
     public function getTotalAmount()
     {
-        $items = $this->getItemsWithProducts();
+        $items = $this->itemsProductDecorator->getItemsWithProducts($this->getItems());
         $total = 0;
 
         if(!$items) {
@@ -109,6 +81,11 @@ class Cart
             $item->setProductId($product->getId())->setQuantity($quantity);
         }
         else {
+
+            if($product->getQuantity() + $quantity < $item->getQuantity()) {
+                throw new ProductNotInStockException();
+            }
+
             $item->addQuantity($quantity);
         }
 
@@ -126,7 +103,7 @@ class Cart
      */
     public function updateProducts(array $products): bool
     {
-        $itemsWithProducts = $this->getItemsWithProducts();
+        $itemsWithProducts = $this->itemsProductDecorator->getItemsWithProducts($this->getItems());
 
         if (count($products) != count($itemsWithProducts)) {
             throw new ProductsSizeIsNotEqualItemsSizeException();

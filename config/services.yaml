@@ -27,6 +27,10 @@ services:
     slugger:
         class: EasySlugger\Slugger
 
+    App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator:
+        arguments:
+            $productRepository: '@App\Repository\ProductRepository'
+
     App\EventSubscriber\AddSlugToProductSubscriber:
         arguments:
             $slugger: '@slugger'
@@ -45,6 +49,8 @@ services:
     App\ShoppingProcess\Cart:
         arguments:
             $session: '@session'
+
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
