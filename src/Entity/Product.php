@@ -31,7 +31,7 @@ class Product
     private $description;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="integer")
      */
     private $price;
 
@@ -42,7 +42,7 @@ class Product
     private $slug;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $img;
 
@@ -109,25 +109,29 @@ class Product
 
     public function getPrice(): ?float
     {
+        $price = $this->price / 100;
+
         if(!$this->discount) {
-            return $this->price;
+            return $price;
         }
 
-        $discountedPrice = $this->price * ((100 - $this->discount->getPercent()) / 100);
+        $discountedPrice = $price * ((100 - $this->discount->getPercent()) / 100);
 
         return round($discountedPrice, 2, PHP_ROUND_HALF_UP);
     }
 
-    public function setPrice(float $price): self
+    public function setPrice(Float $price): self
     {
-        $this->price = $price;
+        $this->price = $price * 100;
 
         return $this;
     }
 
     public function getNotDiscountedPrice()
     {
-        return $this->price;
+        $price = $this->price / 100;
+
+        return $price;
     }
 
     public function getSlug(): ?string
