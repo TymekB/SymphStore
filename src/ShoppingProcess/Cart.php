@@ -44,11 +44,18 @@ class Cart
         return $this->session->get('items', new ItemsCollection());
     }
 
-    public function setItems(ItemsCollection $items)
+    private function setItems(ItemsCollection $items)
     {
         $this->session->set('items', $items);
 
         return $this;
+    }
+
+    public function removeItems()
+    {
+        $this->session->set("items", new ItemsCollection());
+
+        return true;
     }
 
     public function getTotalAmount()
