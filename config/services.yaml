@@ -51,6 +51,13 @@ services:
             $session: '@session'
 
 
+    App\ShoppingProcess\Cart\ProductReservator:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+            $reservedProductRepository: '@App\Repository\ReservedProductRepository'
+            $session: '@session'
+
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

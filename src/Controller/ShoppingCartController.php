@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\ShoppingProcess\Cart;
 use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
+use App\ShoppingProcess\Cart\ProductReservator;
 use App\ShoppingProcess\CartException\ProductNotInStockException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,11 +21,16 @@ class ShoppingCartController extends Controller
      * @var ItemsProductDecorator
      */
     private $itemsProductDecorator;
+    /**
+     * @var ProductReservator
+     */
+    private $productReservator;
 
-    public function __construct(Cart $cart, ItemsProductDecorator $itemsProductDecorator)
+    public function __construct(Cart $cart, ItemsProductDecorator $itemsProductDecorator, ProductReservator $productReservator)
     {
         $this->cart = $cart;
         $this->itemsProductDecorator = $itemsProductDecorator;
+        $this->productReservator = $productReservator;
     }
 
     public function show()
@@ -47,6 +53,9 @@ class ShoppingCartController extends Controller
             $productAdded = $this->cart->addProduct($product);
 
             if($productAdded) {
+
+                $this->productReservator->create($product);
+
                 $this->addFlash('success', 'Product has been added to your cart');
             }
             else {
