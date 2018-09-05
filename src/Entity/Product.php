@@ -75,9 +75,15 @@ class Product
      */
     private $deletedAt;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ReservedProduct", mappedBy="product", orphanRemoval=true)
+     */
+    private $reservedProducts;
+
     public function __construct()
     {
         $this->orderedProducts = new ArrayCollection();
+        $this->reservedProducts = new ArrayCollection();
     }
 
     public function __toString()
@@ -249,6 +255,37 @@ class Product
     public function setDeletedAt(?\DateTimeInterface $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ReservedProduct[]
+     */
+    public function getReservedProducts(): Collection
+    {
+        return $this->reservedProducts;
+    }
+
+    public function addReservedProduct(ReservedProduct $reservedProduct): self
+    {
+        if (!$this->reservedProducts->contains($reservedProduct)) {
+            $this->reservedProducts[] = $reservedProduct;
+            $reservedProduct->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservedProduct(ReservedProduct $reservedProduct): self
+    {
+        if ($this->reservedProducts->contains($reservedProduct)) {
+            $this->reservedProducts->removeElement($reservedProduct);
+            // set the owning side to null (unless already changed)
+            if ($reservedProduct->getProduct() === $this) {
+                $reservedProduct->setProduct(null);
+            }
+        }
 
         return $this;
     }
