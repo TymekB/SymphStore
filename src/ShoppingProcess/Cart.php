@@ -89,7 +89,7 @@ class Cart
         }
         else {
 
-            if($product->getQuantity() + $quantity < $item->getQuantity()) {
+            if($item->getQuantity() + $quantity > $product->getQuantity()) {
                 throw new ProductNotInStockException();
             }
 
