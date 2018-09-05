@@ -7,9 +7,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
+use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
  * @Vich\Uploadable
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 class Product
 {
@@ -64,9 +66,14 @@ class Product
     private $quantity;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderedProduct", mappedBy="product", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderedProduct", mappedBy="product")
      */
     private $orderedProducts;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deletedAt;
 
     public function __construct()
     {
@@ -230,6 +237,18 @@ class Product
                 $orderedProduct->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeInterface
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }
