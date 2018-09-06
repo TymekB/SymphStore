@@ -54,6 +54,7 @@ class ShoppingCartController extends Controller
 
             if($productAdded) {
 
+                $this->productReservator->removeAll();
                 $this->productReservator->create($product);
 
                 $this->addFlash('success', 'Product has been added to your cart');

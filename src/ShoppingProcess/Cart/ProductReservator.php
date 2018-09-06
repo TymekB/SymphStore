@@ -40,6 +40,28 @@ class ProductReservator
         $this->session->start();
     }
 
+    public function removeAll($minutes = 10)
+    {
+        $reservedProducts = $this->reservedProductRepository->findAll();
+
+        foreach($reservedProducts as $reservedProduct) {
+
+            $toTime = strtotime((new DateTime())->format("Y-m-d H:i:s"));
+            $fromTime = strtotime($reservedProduct->getCreatedAt()->format("Y-m-d H:i:s"));
+
+            $diff = round(($toTime - $fromTime) / 60, 2);
+
+            if($diff >= $minutes) {
+                $this->em->remove($reservedProduct);
+            }
+
+        }
+
+        $this->em->flush();
+
+        return true;
+    }
+
     public function create(Product $product)
     {
         $reservedProduct = new ReservedProduct();
