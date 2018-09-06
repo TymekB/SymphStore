@@ -12,6 +12,7 @@ namespace App\ShoppingProcess\Cart;
 use App\Entity\Product;
 use App\Entity\ReservedProduct;
 use App\Repository\ReservedProductRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -45,6 +46,7 @@ class ProductReservator
 
         $reservedProduct->setSessionId($this->session->getId());
         $reservedProduct->setProduct($product);
+        $reservedProduct->setCreatedAt(new DateTime());
 
         $this->em->persist($reservedProduct);
         $this->em->flush();

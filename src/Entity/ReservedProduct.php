@@ -27,6 +27,11 @@ class ReservedProduct
      */
     private $sessionId;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
     public function getId()
     {
         return $this->id;
@@ -52,6 +57,18 @@ class ReservedProduct
     public function setSessionId(string $sessionId): self
     {
         $this->sessionId = $sessionId;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
