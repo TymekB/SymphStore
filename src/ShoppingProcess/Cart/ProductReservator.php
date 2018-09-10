@@ -84,7 +84,25 @@ class ProductReservator
         return true;
     }
 
-    public function removeAll($minutes = 10)
+    public function remove(Product $product)
+    {
+        $reservedProduct = $this->reservedProductRepository->findOneBy(
+            [
+                'product' => $product->getId(),
+                'sessionId' => $this->session->getId()
+            ]);
+
+        if(!$reservedProduct) {
+            return false;
+        }
+
+        $this->em->remove($reservedProduct);
+        $this->em->flush();
+
+        return true;
+    }
+
+    public function removeAllByTimeLeft($minutes = 10)
     {
         $reservedProducts = $this->reservedProductRepository->findAll();
 

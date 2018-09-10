@@ -140,7 +140,7 @@ class Cart
     public function deleteProduct(Product $product)
     {
         $items = $this->getItems();
-        $item = $items->searchItemByProductId($product->getID());
+        $item = $items->searchItemByProductId($product->getId());
 
         if(!$item) {
             throw new ItemNotFoundException();

@@ -56,7 +56,7 @@ class ShoppingCartController extends Controller
     {
         try {
 
-            $this->productReservator->removeAll();
+            $this->productReservator->removeAllByTimeLeft();
 
             if($this->productReservationCounter->countByProductQuantity($product) >= $product->getQuantity()) {
                 throw new ProductNotInStockException();
@@ -113,6 +113,7 @@ class ShoppingCartController extends Controller
     public function deleteProduct(Product $product)
     {
         $productDeleted = $this->cart->deleteProduct($product);
+        $this->productReservator->remove($product);
 
         if($productDeleted) {
             $this->addFlash('success', 'Product deleted');
