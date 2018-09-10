@@ -32,6 +32,11 @@ class ReservedProduct
      */
     private $createdAt;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $quantity;
+
     public function getId()
     {
         return $this->id;
@@ -69,6 +74,25 @@ class ReservedProduct
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function addQuantity(int $quantity = 1): self
+    {
+        $this->quantity += $quantity;
 
         return $this;
     }

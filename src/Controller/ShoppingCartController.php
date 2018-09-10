@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\ShoppingProcess\Cart;
 use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
+use App\ShoppingProcess\Cart\ProductReservationCounter;
 use App\ShoppingProcess\Cart\ProductReservator;
 use App\ShoppingProcess\CartException\ProductNotInStockException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,12 +26,17 @@ class ShoppingCartController extends Controller
      * @var ProductReservator
      */
     private $productReservator;
+    /**
+     * @var ProductReservationCounter
+     */
+    private $productReservationCounter;
 
-    public function __construct(Cart $cart, ItemsProductDecorator $itemsProductDecorator, ProductReservator $productReservator)
+    public function __construct(Cart $cart, ItemsProductDecorator $itemsProductDecorator, ProductReservator $productReservator, ProductReservationCounter $productReservationCounter)
     {
         $this->cart = $cart;
         $this->itemsProductDecorator = $itemsProductDecorator;
         $this->productReservator = $productReservator;
+        $this->productReservationCounter = $productReservationCounter;
     }
 
     public function show()
@@ -41,7 +47,6 @@ class ShoppingCartController extends Controller
         return $this->render('shopping_cart/show.html.twig', ['items' => $items, 'total' => $total]);
     }
 
-
     /**
      * @ParamConverter("product", class="App\Entity\Product")
      * @param Product $product
@@ -50,11 +55,17 @@ class ShoppingCartController extends Controller
     public function addProduct(Product $product)
     {
         try {
+
+            $this->productReservator->removeAll();
+
+            if($this->productReservationCounter->countByProductQuantity($product) >= $product->getQuantity()) {
+                throw new ProductNotInStockException();
+            }
+
             $productAdded = $this->cart->addProduct($product);
 
             if($productAdded) {
 
-                $this->productReservator->removeAll();
                 $this->productReservator->create($product);
 
                 $this->addFlash('success', 'Product has been added to your cart');

@@ -12,6 +12,7 @@ namespace App\ShoppingProcess\Cart;
 use App\Entity\Product;
 use App\Entity\ReservedProduct;
 use App\Repository\ReservedProductRepository;
+use App\ShoppingProcess\CartException\ProductNotInStockException;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -40,6 +41,49 @@ class ProductReservator
         $this->session->start();
     }
 
+    public function getAllByProduct(Product $product)
+    {
+        $productReservation = $this->reservedProductRepository->findAll(['product.id' => $product->getId()]);
+
+        return $productReservation;
+    }
+
+    public function create(Product $product, $quantity = 1)
+    {
+        $reservedProduct = $this->em->getRepository(ReservedProduct::class)->findOneBy(
+            [
+                'product' => $product->getId(),
+                'sessionId' => $this->session->getId()
+            ]);
+
+        if(!$reservedProduct) {
+
+            $reservedProduct = new ReservedProduct();
+
+            $reservedProduct->setSessionId($this->session->getId());
+            $reservedProduct->setProduct($product);
+            $reservedProduct->setCreatedAt(new DateTime());
+            $reservedProduct->setQuantity(1);
+
+            $this->em->persist($reservedProduct);
+        }
+        else {
+
+            if($reservedProduct->getQuantity() + $quantity > $product->getQuantity()) {
+                throw new ProductNotInStockException();
+            }
+
+            $reservedProduct->addQuantity();
+            $reservedProduct->setCreatedAt(new DateTime());
+
+            $this->em->persist($reservedProduct);
+        }
+
+        $this->em->flush();
+
+        return true;
+    }
+
     public function removeAll($minutes = 10)
     {
         $reservedProducts = $this->reservedProductRepository->findAll();
@@ -57,20 +101,6 @@ class ProductReservator
 
         }
 
-        $this->em->flush();
-
-        return true;
-    }
-
-    public function create(Product $product)
-    {
-        $reservedProduct = new ReservedProduct();
-
-        $reservedProduct->setSessionId($this->session->getId());
-        $reservedProduct->setProduct($product);
-        $reservedProduct->setCreatedAt(new DateTime());
-
-        $this->em->persist($reservedProduct);
         $this->em->flush();
 
         return true;
