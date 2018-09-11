@@ -73,7 +73,7 @@ class ProductReservator
                 throw new ProductNotInStockException();
             }
 
-            $reservedProduct->addQuantity();
+            $reservedProduct->addQuantity($quantity);
             $reservedProduct->setCreatedAt(new DateTime());
 
             $this->em->persist($reservedProduct);
@@ -84,7 +84,20 @@ class ProductReservator
         return true;
     }
 
-    public function remove(Product $product)
+    public function removeAllBySession()
+    {
+        $reservedProducts = $this->reservedProductRepository->findBy(['sessionId' => $this->session->getId()]);
+
+        foreach($reservedProducts as $reservedProduct) {
+            $this->em->remove($reservedProduct);
+        }
+
+        $this->em->flush();
+
+        return true;
+    }
+
+    public function removeBySession(Product $product)
     {
         $reservedProduct = $this->reservedProductRepository->findOneBy(
             [

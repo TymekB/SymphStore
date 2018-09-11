@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\ShoppingProcess\Cart;
 use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
+use App\ShoppingProcess\Cart\ProductReservator;
 use App\ShoppingProcess\OrderCreator;
 use App\ShoppingProcess\Payment;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,14 +32,19 @@ class PaymentController extends Controller
      * @var ItemsProductDecorator
      */
     private $itemsProductDecorator;
+    /**
+     * @var ProductReservator
+     */
+    private $productReservator;
 
-    public function __construct(Cart $cart, Payment $payment, OrderCreator $orderCreator, EntityManagerInterface $em, ItemsProductDecorator $itemsProductDecorator)
+    public function __construct(Cart $cart, Payment $payment, OrderCreator $orderCreator, EntityManagerInterface $em, ItemsProductDecorator $itemsProductDecorator, ProductReservator $productReservator)
     {
         $this->cart = $cart;
         $this->payment = $payment;
         $this->em = $em;
         $this->orderCreator = $orderCreator;
         $this->itemsProductDecorator = $itemsProductDecorator;
+        $this->productReservator = $productReservator;
     }
 
     public function processPayment(Request $request)
@@ -61,10 +67,11 @@ class PaymentController extends Controller
             $this->orderCreator->create($orderDetails);
 
             $this->cart->removeItems();
+            $this->productReservator->removeAllBySession();
 
             $this->addFlash('success', "Thank you for purchasing!");
 
-            return $this->redirectToRoute("order_details");
+            return $this->redirectToRoute("order_history");
         }
 
         return $this->render('payment/process_payment.html.twig', ['total' => $total]);

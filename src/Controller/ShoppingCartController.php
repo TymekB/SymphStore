@@ -71,6 +71,7 @@ class ShoppingCartController extends Controller
                 $this->addFlash('success', 'Product has been added to your cart');
             }
             else {
+
                 $this->addFlash('info', 'Product already exists in your cart');
             }
         }
@@ -113,7 +114,7 @@ class ShoppingCartController extends Controller
     public function deleteProduct(Product $product)
     {
         $productDeleted = $this->cart->deleteProduct($product);
-        $this->productReservator->remove($product);
+        $this->productReservator->removeBySession($product);
 
         if($productDeleted) {
             $this->addFlash('success', 'Product deleted');
