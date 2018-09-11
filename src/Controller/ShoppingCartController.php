@@ -96,6 +96,7 @@ class ShoppingCartController extends Controller
 
         try {
             $this->cart->updateProducts($products);
+            $this->productReservator->updateReservations($products);
         }
         catch(ProductNotInStockException $e) {
             $result['success'] = false;

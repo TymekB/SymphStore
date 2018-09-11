@@ -84,6 +84,40 @@ class ProductReservator
         return true;
     }
 
+    public function updateReservations(array $products)
+    {
+        $productsId = [];
+
+        foreach($products as $product) {
+            $productsId[] = $product->id;
+        }
+
+        $reservedProducts = $this->em->getRepository(ReservedProduct::class)->findBy(
+            [
+                'product' => $productsId,
+                'sessionId' => $this->session->getId()
+            ]
+        );
+
+        foreach($reservedProducts as $reservedProduct) {
+
+            foreach($products as $product) {
+
+                if($product->id == $reservedProduct->getProduct()->getId() && $product->quantity > 0) {
+
+                    $reservedProduct->setQuantity($product->quantity);
+                    $reservedProduct->setCreatedAt(new DateTime());
+
+                    $this->em->persist($reservedProduct);
+                }
+            }
+        }
+
+        $this->em->flush();
+
+        return true;
+    }
+
     public function removeAllBySession()
     {
         $reservedProducts = $this->reservedProductRepository->findBy(['sessionId' => $this->session->getId()]);
