@@ -27,6 +27,9 @@ services:
     Slugger:
         class: EasySlugger\Slugger
 
+    Symfony\Component\Serializer\Encoder\JsonDecode:
+
+
     App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator:
         arguments:
             $productRepository: '@App\Repository\ProductRepository'
@@ -61,6 +64,8 @@ services:
     App\ShoppingProcess\Cart\ProductReservationCounter:
         arguments:
             $productReservator: '@ProductReservator'
+
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -206,7 +206,13 @@ class Product
 
     public function getQuantity(): ?int
     {
-        return $this->quantity;
+        $quantity = $this->quantity;
+
+        foreach($this->orderedProducts as $orderedProduct) {
+            $quantity -= $orderedProduct->getQuantity();
+        }
+
+        return $quantity;
     }
 
     public function setQuantity(int $quantity): self

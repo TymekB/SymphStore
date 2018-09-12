@@ -8,12 +8,14 @@ use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
 use App\ShoppingProcess\Cart\ProductReservationCounter;
 use App\ShoppingProcess\Cart\ProductReservator;
 use App\ShoppingProcess\CartException\ProductNotInStockException;
+use stdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ShoppingCartController extends Controller
 {
@@ -30,13 +32,18 @@ class ShoppingCartController extends Controller
      * @var ProductReservationCounter
      */
     private $productReservationCounter;
+    /**
+     * @var JsonDecode
+     */
+    private $jsonDecode;
 
-    public function __construct(Cart $cart, ItemsProductDecorator $itemsProductDecorator, ProductReservator $productReservator, ProductReservationCounter $productReservationCounter)
+    public function __construct(Cart $cart, ItemsProductDecorator $itemsProductDecorator, ProductReservator $productReservator, ProductReservationCounter $productReservationCounter, JsonDecode $jsonDecode)
     {
         $this->cart = $cart;
         $this->itemsProductDecorator = $itemsProductDecorator;
         $this->productReservator = $productReservator;
         $this->productReservationCounter = $productReservationCounter;
+        $this->jsonDecode = $jsonDecode;
     }
 
     public function show()
@@ -91,8 +98,8 @@ class ShoppingCartController extends Controller
             throw $this->createNotFoundException();
         }
 
-        $jsonDecode = new JsonDecode();
-        $products = $jsonDecode->decode($products, JsonEncoder::FORMAT);
+        //$jsonDecode = new JsonDecode();
+        $products = $this->jsonDecode->decode($products, JsonEncoder::FORMAT);
 
         try {
             $this->cart->updateProducts($products);
