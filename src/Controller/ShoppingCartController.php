@@ -63,8 +63,6 @@ class ShoppingCartController extends Controller
     {
         try {
 
-            $this->productReservator->removeAllByTimeLeft();
-
             if($this->productReservationCounter->countByProductQuantity($product) >= $product->getQuantity()) {
                 throw new ProductNotInStockException();
             }
@@ -98,7 +96,6 @@ class ShoppingCartController extends Controller
             throw $this->createNotFoundException();
         }
 
-        //$jsonDecode = new JsonDecode();
         $products = $this->jsonDecode->decode($products, JsonEncoder::FORMAT);
 
         try {

@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ProductReservator
 {
+    const DEFAULT_LIVE_TIME = 10;
     /**
      * @var EntityManagerInterface
      */
@@ -149,24 +150,15 @@ class ProductReservator
         return true;
     }
 
-    public function removeAllByTimeLeft($minutes = 10)
+    public function purgeOld(int $minutes = self::DEFAULT_LIVE_TIME)
     {
-        $reservedProducts = $this->reservedProductRepository->findAll();
+        $query = $this->em->createQueryBuilder()
+            ->delete()
+            ->from(ReservedProduct::class, 'rp')
+            ->where("CURRENT_TIMESTAMP() - rp.createdAt >= :time")
+            ->setParameter("time", $minutes)->getQuery();
 
-        foreach($reservedProducts as $reservedProduct) {
-
-            $toTime = strtotime((new DateTime())->format("Y-m-d H:i:s"));
-            $fromTime = strtotime($reservedProduct->getCreatedAt()->format("Y-m-d H:i:s"));
-
-            $diff = round(($toTime - $fromTime) / 60, 2);
-
-            if($diff >= $minutes) {
-                $this->em->remove($reservedProduct);
-            }
-
-        }
-
-        $this->em->flush();
+        $query->execute();
 
         return true;
     }
