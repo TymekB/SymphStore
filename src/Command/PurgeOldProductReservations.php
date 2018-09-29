@@ -40,6 +40,7 @@ class PurgeOldProductReservations extends Command
     {
         $output->writeln('purging...');
 
+
         $this->reservator->purgeOld($this->time);
 
         $output->writeln('done');

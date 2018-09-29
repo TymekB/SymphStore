@@ -34,6 +34,7 @@ services:
         arguments:
             $time: '%product_reservation_live_time%'
 
+    App\Command\SaveProductsToXML:
 
     App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator:
         arguments:

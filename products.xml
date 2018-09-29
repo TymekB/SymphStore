@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<offers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1">
+ <o id="1" url="http://localhost:8000/product/test-product" price="6" stock="10"/>
+ <name>test product</name>
+ <desc>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque hendrerit</desc>
+ <o id="2" url="http://localhost:8000/product/test-product-2" price="169" stock="50"/>
+ <name>test product 2</name>
+ <desc>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent maximus bibendum condimentum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</desc>
+ <o id="3" url="http://localhost:8000/product/test-product-3" price="5" stock="50"/>
+ <name>test product 3</name>
+ <desc>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In enim quam, feugiat et viverra eget, tempor sed est. Aenean consectetur sit amet sapien non mollis. Nullam convallis risus nibh, nec tempor mi lobortis non. Etiam sed quam a libero ornare varius non quis risus. Sed vitae blandit mauris. Etiam maximus ut nunc ut mattis. Pellentesque cursus scelerisque hendrerit. Suspendisse a pulvinar nulla, et auctor purus. Donec ullamcorper sem sem, et vulputate sapien pulvinar ut. Aliquam tincidunt sit amet urna et vehicula. Nam et congue erat, id interdum ante.</desc>
+ <o id="6" url="http://localhost:8000/product/slugger-testing" price="1.99" stock="50"/>
+ <name>slugger testing</name>
+ <desc>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam efficitur sagittis erat, quis sagittis erat dictum in. Mauris interdum ut mi eu volutpat. Ut convallis dapibus neque, vel fermentum tellus vestibulum eu. Vestibulum commodo metus eu nunc mattis porttitor. Suspendisse dictum, orci sit amet congue imperdiet, justo justo malesuada nisi, a sodales nisl libero sit amet felis. Maecenas pretium tortor a accumsan ultrices. Praesent non lorem lacinia, rhoncus libero ac, bibendum est. Nulla bibendum nulla volutpat, auctor ante ac, congue augue.</desc>
+ <o id="7" url="http://localhost:8000/product/product-12" price="21" stock="50"/>
+ <name>product 12</name>
+ <desc>test test test test test test test test test test test test test v</desc>
+ <o id="11" url="http://localhost:8000/product/img-testing" price="2.1" stock="45"/>
+ <name>img testing</name>
+ <desc>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla gravida nisl diam, eu elementum mauris maximus sed. Nulla facilisi. Donec sagittis ligula turpis, et tincidunt lorem dapibus sed. Maecenas luctus molestie consequat. Nunc elementum facilisis urna ut elementum. Proin eget condimentum sem. Etiam rutrum mi sed massa congue, pellentesque scelerisque lorem consectetur. Nunc efficitur pellentesque metus eu blandit. Fusce viverra est orci, non hendrerit diam tincidunt sed. Vivamus arcu lacus, lobortis in porttitor a, consequat sit amet leo. Ut varius malesuada sapien eu placerat. Nullam in risus at erat congue tincidunt.</desc>
+</offers>

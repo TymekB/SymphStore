@@ -27,8 +27,6 @@ class ProductQuantitySubtractor
 
     public function subtract(OrderDetails $orderDetails)
     {
-        $this->em->getRepository(Product::class);
-
         foreach($orderDetails->getOrderedProducts() as $orderedProduct) {
             $product = $orderedProduct->getProduct();
             $productQuantity = $orderedProduct->getProduct()->getQuantity();
