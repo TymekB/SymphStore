@@ -17,7 +17,7 @@
                         <div class="clearfix"></div>
 
                         <div class="pull-left">Quantity</div>
-                        <div class="pull-right">{{ product.quantity }}</div>
+                        <div class="pull-right">{{ product.quantity > 0 ? product.quantity : 'out of stock' }}</div>
                         <div class="clearfix"></div>
 
                         <div class="pull-left">Price</div>

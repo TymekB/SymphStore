@@ -19,10 +19,15 @@ class OrderCreator
      * @var EntityManagerInterface
      */
     private $em;
+    /**
+     * @var ProductQuantitySubtractor
+     */
+    private $productQuantitySubtractor;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, ProductQuantitySubtractor $productQuantitySubtractor)
     {
         $this->em = $em;
+        $this->productQuantitySubtractor = $productQuantitySubtractor;
     }
 
     public function create(OrderDetails $orderDetails)
@@ -38,6 +43,8 @@ class OrderCreator
 
         $this->em->persist($order);
         $this->em->flush();
+
+        $this->productQuantitySubtractor->subtract($orderDetails);
 
         return true;
     }

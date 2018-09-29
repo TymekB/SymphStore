@@ -8,6 +8,7 @@ use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
 use App\ShoppingProcess\Cart\ProductReservator;
 use App\ShoppingProcess\OrderCreator;
 use App\ShoppingProcess\Payment;
+use App\ShoppingProcess\ProductQuantitySubtractor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -64,6 +65,7 @@ class PaymentController extends Controller
             $this->payment->process($this->getUser(), $items);
 
             $orderDetails = $this->payment->getOrderDetails();
+
             $this->orderCreator->create($orderDetails);
 
             $this->cart->removeItems();
