@@ -38,13 +38,12 @@ class PaymentController extends Controller
      */
     private $productReservator;
 
-    public function __construct(Cart $cart, Payment $payment, OrderCreator $orderCreator, EntityManagerInterface $em, ItemsProductDecorator $itemsProductDecorator, ProductReservator $productReservator)
+    public function __construct(Cart $cart, Payment $payment, OrderCreator $orderCreator, EntityManagerInterface $em, ProductReservator $productReservator)
     {
         $this->cart = $cart;
         $this->payment = $payment;
         $this->em = $em;
         $this->orderCreator = $orderCreator;
-        $this->itemsProductDecorator = $itemsProductDecorator;
         $this->productReservator = $productReservator;
     }
 
@@ -59,7 +58,7 @@ class PaymentController extends Controller
 
         if($token) {
 
-            $items = $this->itemsProductDecorator->getItemsWithProducts($this->cart->getItems());
+            $items = $this->cart->getItems();
 
             $this->payment->setToken($token);
             $this->payment->process($this->getUser(), $items);

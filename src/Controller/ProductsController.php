@@ -6,6 +6,8 @@ use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ProductsController extends Controller
 {
@@ -13,10 +15,7 @@ class ProductsController extends Controller
      * @var ProductRepository
      */
     private $productRepository;
-    /**
-     * ProductsController constructor.
-     * @param ProductRepository $productRepository
-     */
+
     public function __construct(ProductRepository $productRepository)
     {
         $this->productRepository = $productRepository;
@@ -32,6 +31,8 @@ class ProductsController extends Controller
 
     /**
      * @ParamConverter("product", options={"mapping": {"name" = "slug"}})
+     * @param Product $product
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function show(Product $product)
     {

@@ -48,7 +48,7 @@ class ShoppingCartController extends Controller
 
     public function show()
     {
-        $items = $this->itemsProductDecorator->getItemsWithProducts($this->cart->getItems());
+        $items = $this->cart->getItems();
         $total = $this->cart->getTotalAmount();
 
         return $this->render('shopping_cart/show.html.twig', ['items' => $items, 'total' => $total]);

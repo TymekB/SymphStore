@@ -48,7 +48,7 @@ class Payment
         return $this->orderDetails;
     }
 
-    public function process(User $user, ItemsCollection $items, $currency = 'usd')
+    public function process(User $user, $items, $currency = 'usd')
     {
         if(!$this->token) {
             throw new TokenNotFound();

@@ -58,7 +58,6 @@ class SaveProductsToXML extends Command
             $writer->endAttribute();
 
             $writer->startAttribute("name");
-
         }
 
         $writer->endElement();

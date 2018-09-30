@@ -10,68 +10,66 @@ namespace App\ShoppingProcess;
 
 
 use App\Entity\Product;
-use App\Repository\ProductRepository;
+use App\Entity\User;
+use App\Repository\ItemRepository;
 use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
-use App\ShoppingProcess\Cart\ItemsCollection;
-use App\ShoppingProcess\Cart\Item;
+use App\Entity\Item;
 use App\ShoppingProcess\CartException\ItemNotFoundException;
 use App\ShoppingProcess\CartException\ProductNotInStockException;
 use App\ShoppingProcess\CartException\ProductsSizeIsNotEqualItemsSizeException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class Cart
 {
     /**
-     * @var SessionInterface
-     */
-    private $session;
-    /**
      * @var ItemsProductDecorator
      */
     private $itemsProductDecorator;
+    /**
+     * @var ItemRepository
+     */
+    private $itemRepository;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+    /**
+     * @var SessionInterface
+     */
+    private $session;
 
-    public function __construct(SessionInterface $session, ItemsProductDecorator $itemsProductDecorator)
+    public function __construct(SessionInterface $session, EntityManagerInterface $em, ItemRepository $itemRepository, ItemsProductDecorator $itemsProductDecorator)
     {
         $this->session = $session;
         $this->session->start();
-
         $this->itemsProductDecorator = $itemsProductDecorator;
+        $this->itemRepository = $itemRepository;
+        $this->em = $em;
     }
 
-    public function getItems(): ItemsCollection
+    public function getItems()
     {
-        return $this->session->get('items', new ItemsCollection());
-    }
+        $items = $this->itemRepository->findBy(['sessionId' => $this->session->getId()]);
 
-    private function setItems(ItemsCollection $items)
-    {
-        $this->session->set('items', $items);
-
-        return $this;
-    }
-
-    public function removeItems()
-    {
-        $this->session->set("items", new ItemsCollection());
-
-        return true;
+        return $items;
     }
 
     public function getTotalAmount()
     {
-        $items = $this->itemsProductDecorator->getItemsWithProducts($this->getItems());
+        $items = $this->getItems();
         $total = 0;
 
         if(!$items) {
             return $total;
         }
 
-        $total = $items->map(function(Item $item){
+        $total = array_map(function(Item $item) {
             return $item->getProduct()->getPrice() * $item->getQuantity();
-        });
+        }, $items);
 
-        return array_sum($total->toArray());
+        return array_sum($total);
     }
 
     public function addProduct(Product $product, int $quantity = 1)
@@ -80,12 +78,13 @@ class Cart
             throw new ProductNotInStockException();
         }
 
-        $items = $this->getItems();
-        $item = $items->searchItemByProductId($product->getId());
+        $item = $this->itemRepository->findOneByProductAndSessionId($product, $this->session->getId());
 
         if(!$item) {
             $item = new Item();
-            $item->setProductId($product->getId())->setQuantity($quantity);
+            $item->setProduct($product)
+                ->setQuantity($quantity)
+                ->setSessionId($this->session->getId());
         }
         else {
 
@@ -96,9 +95,9 @@ class Cart
             $item->addQuantity($quantity);
         }
 
-        $items->addItem($item);
+        $this->em->persist($item);
+        $this->em->flush();
 
-        $this->setItems($items);
 
         return true;
     }
@@ -107,16 +106,17 @@ class Cart
      * @param array $products
      * @return bool
      * @throws ProductsSizeIsNotEqualItemsSizeException
+     * @throws ProductNotInStockException
      */
     public function updateProducts(array $products): bool
     {
-        $itemsWithProducts = $this->itemsProductDecorator->getItemsWithProducts($this->getItems());
+        $items = $this->getItems();
 
-        if (count($products) != count($itemsWithProducts)) {
+        if (count($products) != count($items)) {
             throw new ProductsSizeIsNotEqualItemsSizeException();
         }
 
-        $itemsWithProducts->map(function(Item $item) use($products) {
+        foreach($items as $item) {
 
                 foreach($products as $product) {
 
@@ -127,26 +127,41 @@ class Cart
                             throw new ProductNotInStockException($item->getProduct()->getName(). " not in stock.");
                         }
 
-                        return $item->setQuantity($product->quantity);
+                        $item->setQuantity($product->quantity);
+                        $this->em->persist($item);
                     }
                 }
+        }
 
-                return $item;
-        });
+        $this->em->flush();
 
         return true;
     }
 
     public function deleteProduct(Product $product)
     {
-        $items = $this->getItems();
-        $item = $items->searchItemByProductId($product->getId());
+        $item = $this->itemRepository->findOneByProductAndSessionId($product, $this->session->getId());
 
         if(!$item) {
             throw new ItemNotFoundException();
         }
 
-        $items->deleteItem($item);
+        $this->em->remove($item);
+        $this->em->flush();
+
+        return true;
+    }
+
+    public function removeItems()
+    {
+        $query = $this->em->createQueryBuilder()
+            ->delete()
+            ->from(Item::class, 'i')
+            ->where("i.sessionId = :sessionId")
+            ->setParameter("sessionId", $this->session->getId())
+            ->getQuery();
+
+        $query->execute();
 
         return true;
     }

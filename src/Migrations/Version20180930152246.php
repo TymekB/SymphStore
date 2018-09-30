@@ -8,15 +8,16 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20180707105844 extends AbstractMigration
+final class Version20180930152246 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE discount (id INT AUTO_INCREMENT NOT NULL, product_id INT DEFAULT NULL, percent INT NOT NULL, INDEX IDX_E1E0B40E4584665A (product_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE discount ADD CONSTRAINT FK_E1E0B40E4584665A FOREIGN KEY (product_id) REFERENCES product (id)');
+        $this->addSql('ALTER TABLE item DROP FOREIGN KEY FK_1F1B251EA76ED395');
+        $this->addSql('DROP INDEX IDX_1F1B251EA76ED395 ON item');
+        $this->addSql('ALTER TABLE item ADD session_id VARCHAR(255) NOT NULL, DROP user_id');
     }
 
     public function down(Schema $schema) : void
@@ -24,6 +25,8 @@ final class Version20180707105844 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE discount');
+        $this->addSql('ALTER TABLE item ADD user_id INT NOT NULL, DROP session_id');
+        $this->addSql('ALTER TABLE item ADD CONSTRAINT FK_1F1B251EA76ED395 FOREIGN KEY (user_id) REFERENCES app_users (id)');
+        $this->addSql('CREATE INDEX IDX_1F1B251EA76ED395 ON item (user_id)');
     }
 }
