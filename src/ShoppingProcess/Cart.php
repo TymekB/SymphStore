@@ -10,23 +10,16 @@ namespace App\ShoppingProcess;
 
 
 use App\Entity\Product;
-use App\Entity\User;
 use App\Repository\ItemRepository;
-use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
 use App\Entity\Item;
 use App\ShoppingProcess\CartException\ItemNotFoundException;
 use App\ShoppingProcess\CartException\ProductNotInStockException;
 use App\ShoppingProcess\CartException\ProductsSizeIsNotEqualItemsSizeException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class Cart
 {
-    /**
-     * @var ItemsProductDecorator
-     */
-    private $itemsProductDecorator;
     /**
      * @var ItemRepository
      */
@@ -40,11 +33,10 @@ class Cart
      */
     private $session;
 
-    public function __construct(SessionInterface $session, EntityManagerInterface $em, ItemRepository $itemRepository, ItemsProductDecorator $itemsProductDecorator)
+    public function __construct(SessionInterface $session, EntityManagerInterface $em, ItemRepository $itemRepository)
     {
         $this->session = $session;
         $this->session->start();
-        $this->itemsProductDecorator = $itemsProductDecorator;
         $this->itemRepository = $itemRepository;
         $this->em = $em;
     }

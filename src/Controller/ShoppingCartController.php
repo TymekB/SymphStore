@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\ShoppingProcess\Cart;
-use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
 use App\ShoppingProcess\Cart\ProductReservationCounter;
 use App\ShoppingProcess\Cart\ProductReservator;
 use App\ShoppingProcess\CartException\ProductNotInStockException;
@@ -15,15 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ShoppingCartController extends Controller
 {
     private $cart;
-    /**
-     * @var ItemsProductDecorator
-     */
-    private $itemsProductDecorator;
     /**
      * @var ProductReservator
      */
@@ -37,10 +31,9 @@ class ShoppingCartController extends Controller
      */
     private $jsonDecode;
 
-    public function __construct(Cart $cart, ItemsProductDecorator $itemsProductDecorator, ProductReservator $productReservator, ProductReservationCounter $productReservationCounter, JsonDecode $jsonDecode)
+    public function __construct(Cart $cart, ProductReservator $productReservator, ProductReservationCounter $productReservationCounter, JsonDecode $jsonDecode)
     {
         $this->cart = $cart;
-        $this->itemsProductDecorator = $itemsProductDecorator;
         $this->productReservator = $productReservator;
         $this->productReservationCounter = $productReservationCounter;
         $this->jsonDecode = $jsonDecode;

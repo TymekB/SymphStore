@@ -2,13 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Order;
 use App\ShoppingProcess\Cart;
-use App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator;
 use App\ShoppingProcess\Cart\ProductReservator;
 use App\ShoppingProcess\OrderCreator;
 use App\ShoppingProcess\Payment;
-use App\ShoppingProcess\ProductQuantitySubtractor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -29,10 +26,6 @@ class PaymentController extends Controller
      * @var OrderCreator
      */
     private $orderCreator;
-    /**
-     * @var ItemsProductDecorator
-     */
-    private $itemsProductDecorator;
     /**
      * @var ProductReservator
      */

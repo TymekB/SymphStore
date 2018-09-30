@@ -10,7 +10,6 @@ namespace App\ShoppingProcess;
 
 use App\Entity\OrderedProduct;
 use App\Entity\User;
-use App\ShoppingProcess\Cart\ItemsCollection;
 use App\ShoppingProcess\Order\OrderDetails;
 use App\ShoppingProcess\PaymentException\TokenNotFound;
 use Stripe\Charge;

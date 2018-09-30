@@ -36,10 +36,6 @@ services:
 
     App\Command\SaveProductsToXML:
 
-    App\ShoppingProcess\Cart\Decorators\ItemsProductDecorator:
-        arguments:
-            $productRepository: '@App\Repository\ProductRepository'
-
     App\EventSubscriber\AddSlugToProductSubscriber:
         arguments:
             $slugger: '@Slugger'

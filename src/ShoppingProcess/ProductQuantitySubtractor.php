@@ -9,7 +9,6 @@
 namespace App\ShoppingProcess;
 
 
-use App\Entity\Product;
 use App\ShoppingProcess\Order\OrderDetails;
 use Doctrine\ORM\EntityManagerInterface;
 
